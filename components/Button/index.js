@@ -1,8 +1,8 @@
 
-const Button = ({children, background}) => {
+const Button = ({children, background, onClick}) => {
     return (
         <>
-            <button>
+            <button onClick={onClick}>
                 {children}
             </button>
             <style jsx>{`

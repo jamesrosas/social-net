@@ -1,51 +1,57 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
+import Avatar from '../components/Avatar'
 import Button from '../components/Button/index'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faGithub } from '@fortawesome/free-solid-svg-icons'
+import { loginWithGitHub, onAuthStateChanged } from '../firebase/client'
 
 export default function Home() {
+
+  const [user, setUser] = useState(undefined)
+
+  useEffect( () => {
+    onAuthStateChanged(user => setUser(user))
+  }, [])
+
+  const handleClick = () => {
+    loginWithGitHub().then( user => {
+      setUser(user)
+      console.log(user) 
+    }).catch( err => {
+      console.log(err)
+    })
+  }
+// const hanldeClick = async() => {
+//     try {
+//       const user = await loginWithGitHub()
+//       setUser(user)
+//     } catch(err) {
+//         console.log(err)
+//     }
+// } MISMO HANDLECLICK PERO CON ASYNC AWAIT EN LUGAR DE PROMESAS TRADICIONALES COMO LA ANTERIOR
+
   return (
     <>
-      <div className="home-container">
         <Head>
           <title>Social Network</title>
           <meta name="description" content="welcome to your social-net" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main id="log-section">
+        <section>
           <Image src="/vercel.svg" alt="social-net logo" width={300} height={300} />
           <h1>Welcome to social-net</h1>
-          <Button background="black">
-            <img src="/github-brands.svg" alt="github logo" width={24}/>
-            Login with GitHub
-          </Button>
-        </main>
-      </div>
-
+          { user === null && (
+            <Button onClick={handleClick} background="black">
+              <img src="/github-brands.svg" alt="github logo" width={24}/>
+              Login with GitHub
+            </Button>    
+          )}
+          { user && user.avatar && (
+              <Avatar src={user.avatar} alt={user.username} email={user.email}/>
+          )}
+        </section>
+        
       <style jsx>{`
-      
-        .home-container {
-          width: 100%;
-          height: 100vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: #80808029;
-        }
-
-        main#log-section {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 100%;
-          max-width: 500px;
-          height: 100vh;
-          max-height: 825px;
-          background-color: white;
-          box-shadow: 2px 2px 6px rgba(128, 128, 128, 0.733);
-        }  
 
         h1 {
           font-family:'Poppins', sans-serif;

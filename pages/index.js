@@ -1,23 +1,23 @@
+import useUser, { USER_STATES } from 'hooks/useUser'
+import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import Avatar from '../components/Avatar'
+import { useEffect } from 'react'
 import Button from '../components/Button/index'
-import { loginWithGitHub, onAuthStateChanged } from '../firebase/client'
+import { loginWithGitHub } from '../firebase/client'
+
 
 export default function Home() {
 
-  const [user, setUser] = useState(undefined)
+  const user = useUser()
+  const router = useRouter()
 
-  useEffect( () => {
-    onAuthStateChanged(user => setUser(user))
-  }, [])
+  useEffect(() => {
+    user && router.replace('/home')
+  }, [user])
 
   const handleClick = () => {
-    loginWithGitHub().then( user => {
-      setUser(user)
-      console.log(user) 
-    }).catch( err => {
+    loginWithGitHub().catch( err => {
       console.log(err)
     })
   }
@@ -40,14 +40,14 @@ export default function Home() {
         <section>
           <Image src="/vercel.svg" alt="social-net logo" width={300} height={300} />
           <h1>Welcome to social-net</h1>
-          { user === null && (
+          { user === USER_STATES.NOT_LOGGED && (
             <Button onClick={handleClick} background="black">
               <img src="/github-brands.svg" alt="github logo" width={24}/>
               Login with GitHub
             </Button>    
           )}
-          { user && user.avatar && (
-              <Avatar src={user.avatar} alt={user.username} email={user.email}/>
+          { user === USER_STATES.NOT_KNOWN && (
+              <p>Loadingggg....</p>
           )}
         </section>
         
@@ -58,6 +58,16 @@ export default function Home() {
           font-size: 28px;
           font-weigth: 600;
           margin-bottom: 2rem;
+          text-align: center;
+        }
+
+        section {
+          height: 100vh;
+          width: 100%;
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
         }
         img {
           margin-right: 1rem;

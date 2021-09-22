@@ -1,8 +1,8 @@
 
-const Button = ({children, background, onClick}) => {
+const Button = ({children, background, onClick, disabled}) => {
     return (
         <>
-            <button onClick={onClick}>
+            <button disabled={disabled} onClick={onClick}>
                 {children}
             </button>
             <style jsx>{`
@@ -18,6 +18,11 @@ const Button = ({children, background, onClick}) => {
                     border: none;
                     display: flex;
                     align-items: center;
+                    margin: 0 auto;
+                }
+                button[disabled]{
+                    pointer-events: none;
+                    opacity: .2;
                 }
                 button:hover {
                     opacity: .5;

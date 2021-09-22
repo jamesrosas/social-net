@@ -29,8 +29,12 @@ const Layout = ({children}) => {
                 background-color: white;
                 box-shadow: 2px 2px 6px rgba(128, 128, 128, 0.733);
                 position: relative;
-                font-family: 'Poppins', sans-serif;
             } 
+            @media (min-width: 500px){
+                main {
+                    height: fit-content;
+                }
+            }
         `}</style>
         </>
     )

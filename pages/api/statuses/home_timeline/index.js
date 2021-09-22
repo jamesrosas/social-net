@@ -22,6 +22,30 @@ const timeline = [
         name: "Pipa Schwartz",
         description: "lo mejor de todo es ver hacia atras y notar cuanto has crecido en conimiento, y como con este has ayudado a varias personas a construir sus ideas",
         avatar: "https://i.postimg.cc/wBk4j0cY/rickandmorty.png"
+    },
+    {
+        id: 5,
+        name: "James Rosas",
+        description: "Que genial que esta este proyecto, te reta en gran medida y tambien te enseña bastante",
+        avatar: "https://i.postimg.cc/CLVk4R4t/supreme-galaxy.png"
+    },
+    {
+        id: 6,
+        name: "Gloria Queroz",
+        description: "No ha sido un camino nada facil convertirme en desarrolladora de Sofware pero sin duda cada minuto ha valido la pena",
+        avatar: "https://i.postimg.cc/2jtcyqvy/bubble.png"
+    },
+    {
+        id: 7,
+        name: "Oscar Stweart",
+        description: "Con el desarrollo web puedes trabajar en cualquier sector que te imaginas, todo lleva programacion , y encima lo puedes hacer en remoto desde cualquier lugar del mundo",
+        avatar: "https://i.postimg.cc/yxhJGTTG/tupac.png"
+    },
+    {
+        id: 8,
+        name: "Pipa Schwartz",
+        description: "lo mejor de todo es ver hacia atras y notar cuanto has crecido en conimiento, y como con este has ayudado a varias personas a construir sus ideas",
+        avatar: "https://i.postimg.cc/wBk4j0cY/rickandmorty.png"
     }
 ]
 

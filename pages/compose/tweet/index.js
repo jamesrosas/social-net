@@ -1,19 +1,45 @@
 import Button from "components/Button"
 import useUser from "hooks/useUser"
 import { useState } from "react/cjs/react.development"
+import { addNett } from "firebase/client"
+import { useRouter } from "next/dist/client/router"
+
+
+const COMPOSE_STATES = {
+    USER_NOT_KNOWN: 0,
+    LOADING: 1,
+    SUCCES: 2,
+    ERROR: -1
+}
 
 const ComposeTweet = () => {
 
     const user = useUser()
 
     const [message, setMessage] = useState('')
+    const [status, setStatus] = useState(COMPOSE_STATES.USER_NOT_KNOWN)
+    const router = useRouter()
 
     const handleChange = (e) => {
         setMessage(e.target.value)
     }
 
+    const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING
+
     const handleSubmit = (e) => {
         e.preventDefault()
+        setStatus(COMPOSE_STATES.LOADING)
+        addNett({
+            avatar: user.avatar,
+            content: message,
+            userId: user.uid,
+            userName: user.username
+        }).then(() => {
+            router.push('/home')
+        }).catch( err => {
+            console.log(err)
+            setStatus(COMPOSE_STATES.ERROR)
+        })
     }
 
     return (
@@ -21,7 +47,7 @@ const ComposeTweet = () => {
         <section>
             <form onSubmit={handleSubmit}>
                 <textarea onChange={handleChange} placeholder="¿Qué esta pasando?"></textarea>
-                <Button disabled={message.length === 0} background="black">Nettear</Button>
+                <Button disabled={isButtonDisabled} background="black">Nettear</Button>
             </form>
         </section>
 

@@ -1,4 +1,5 @@
 import Devit from "components/Devit"
+import { fetchLatestNetts } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useEffect, useState } from "react"
 
@@ -15,11 +16,12 @@ const Timeline = () => {
     }
 
     useEffect(() => {
-        user &&
-            getDta()
-        // fetch("http://localhost:3000/api/statuses/home_timeline")
-        //     .then(res => res.json())
-        //     .then(setTimeline)
+        user && fetchLatestNetts().then(timeline => {
+            setTimeline(timeline)
+            console.log(timeline)
+        })
+            // getDta()
+        
     }, [user])
 
     return (
@@ -30,7 +32,7 @@ const Timeline = () => {
             <section>
                 {timeline.map( devit => {
                     return (
-                        <Devit key={devit.id} userName={devit.name} image={devit.avatar} description={devit.description} />
+                        <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content} userId={devit.userId} createdAt={devit.createdAt}/>
                     )
                 })}
                 {!timeline && (

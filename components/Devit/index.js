@@ -1,13 +1,16 @@
 import Avatar from "components/Avatar"
 
-const Devit = ({ userName, image, description}) => {
+const Devit = ({ userName, avatar, content, createdAt}) => {
     return (
         <>
         <article>
-            <Avatar src={image} alt={userName}/>
+            <Avatar src={avatar} alt={userName}/>
             <div>
-                <h5>{userName}</h5>
-                <p>{description}</p>
+                <header>
+                    <h5>{userName}</h5>
+                    <small>{createdAt}</small>
+                </header>
+                <p>{content}</p>
             </div>
         </article>
 
@@ -25,6 +28,10 @@ const Devit = ({ userName, image, description}) => {
                 margin-bottom: 1rem;
                 font-weight: 600;
                 font-size: 1.9rem;
+            }
+            small {
+                color: grey;
+                font-size: 1.6rem;
             }
 
         `}</style>

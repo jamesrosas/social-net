@@ -27,6 +27,7 @@ const Button = ({children, background, onClick, disabled}) => {
                 button:hover {
                     opacity: .5;
                 }
+                
 
             `}</style>
         </>

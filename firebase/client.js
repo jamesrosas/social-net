@@ -45,10 +45,11 @@ export const loginWithGitHub = () => {
         .signInWithPopup(githubProvider)
 }
 
-export const addNett = ({avatar, content, userId, userName}) => {
+export const addNett = ({avatar, content, userId, userName, img}) => {
     return db.collection('netters').add({
         avatar,
         content,
+        img,
         userId,
         userName,
         createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
@@ -75,4 +76,10 @@ export const fetchLatestNetts = () => {
                 }
             })
         })
+}
+
+export const uploadImage = (file) => {
+    const ref = firebase.storage().ref(`ìmages/${file.name}`)
+    const task = ref.put(file)
+    return task
 }

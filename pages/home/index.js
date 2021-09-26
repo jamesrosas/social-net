@@ -1,7 +1,11 @@
 import Devit from "components/Devit"
+import CreateIcon from "components/Icons/Create"
 import { fetchLatestNetts } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useEffect, useState } from "react"
+import Link from "next/link"
+import HomeIcon from "components/Icons/Home"
+import Head from "next/head"
 
 const Timeline = () => {
 
@@ -26,13 +30,16 @@ const Timeline = () => {
 
     return (
         <>
+            <Head>
+                <title>Inicio / Home</title>
+            </Head>
             <header>
                 <p>Incio</p>
             </header>
             <section>
                 {timeline.map( devit => {
                     return (
-                        <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content} userId={devit.userId} createdAt={devit.createdAt}/>
+                        <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content} userId={devit.userId} createdAt={devit.createdAt} img={devit.img}/>
                     )
                 })}
                 {!timeline && (
@@ -41,7 +48,18 @@ const Timeline = () => {
                     </div>
                 )}
             </section>
-            <nav></nav>
+            <nav>
+                <Link href="/"> 
+                    <a>
+                        <HomeIcon fill="darkcyan"  width={35} height={35}/>
+                    </a>
+                </Link>
+                <Link href="/compose/tweet"> 
+                    <a>
+                        <CreateIcon stroke="darkcyan" width={35} height={35} />
+                    </a>
+                </Link>
+            </nav>
 
             <style jsx>{`
 
@@ -77,6 +95,18 @@ const Timeline = () => {
                     width: 100%;
                     max-width: 500px;
                     border-top: 1px solid grey;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-around;
+                }
+
+                nav a {
+                    padding: 0 1rem;
+                }
+
+                nav a:hover{
+                    background: #dedede;
+                    border-radius: 10px;
                 }
 
                 header, nav {

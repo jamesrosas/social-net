@@ -1,3 +1,4 @@
+import GitHubIcon from 'components/Icons/GitHub'
 import useUser, { USER_STATES } from 'hooks/useUser'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
@@ -42,7 +43,7 @@ export default function Home() {
           <h1>Welcome to social-net</h1>
           { user === USER_STATES.NOT_LOGGED && (
             <Button onClick={handleClick} background="black">
-              <img src="/github-brands.svg" alt="github logo" width={24}/>
+              <GitHubIcon fill="white" width={24} height={24}/>
               Login with GitHub
             </Button>    
           )}

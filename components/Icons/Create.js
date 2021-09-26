@@ -1,0 +1,29 @@
+import * as React from "react"
+
+function CreateIcon(props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      width="1em"
+      height="1em"
+      viewBox="0 0 21 21"
+      {...props}
+    >
+      <g
+        fill="none"
+        fillRule="evenodd"
+        stroke="blue"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        {...props}
+      >
+        <path d="M10 4.5H5.5a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2V11" />
+        <path d="M17.5 3.467a1.462 1.462 0 01-.017 2.05L10.5 12.5l-3 1 1-3 6.987-7.046a1.409 1.409 0 011.885-.104zM15.5 5.5l.953 1" />
+      </g>
+    </svg>
+  )
+}
+
+export default CreateIcon
+

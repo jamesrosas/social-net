@@ -3,6 +3,7 @@ import useUser from "hooks/useUser"
 import { useEffect, useState } from "react/cjs/react.development"
 import { addNett, uploadImage } from "firebase/client"
 import { useRouter } from "next/dist/client/router"
+import Avatar from "components/Avatar"
 
 
 const COMPOSE_STATES = {
@@ -90,6 +91,11 @@ const ComposeTweet = () => {
     return (
         <>
         <section>
+            {user && (
+                <div className="avatar-container">
+                    <Avatar src={user.avatar}/>
+                </div>
+            )}
             <form onSubmit={handleSubmit}>
                 <textarea onChange={handleChange} 
                 onDragEnter={handleDragEnter}
@@ -103,7 +109,9 @@ const ComposeTweet = () => {
                         <img src={imageURL} />  
                     </div>
                 )}
-                <Button disabled={isButtonDisabled} background="black">Nettear</Button>
+                <div className="button-container"> 
+                    <Button disabled={isButtonDisabled} background="black">Nettear</Button>
+                </div>
             </form>
         </section>
 
@@ -113,19 +121,34 @@ const ComposeTweet = () => {
                 height: 100vh;
                 width: 100%;
                 overflow-y: auto;
+                display: flex;
+                align-items: flex-start;
+                padding: 2rem;
             }
+
+            .avatar-container {
+                padding-top: 1.5rem;
+                display: flex;
+                justify-content: center;
+                margin-right: -2rem;
+            }
+
             form {
                 width: 100%;
-                padding: 1rem;
+                padding: 1rem 0 1rem 1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
             }
             textarea {
-                margin: 3rem 0;
-                border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER ? "3px dashed cyan" : "3px solid transparent"};
+                border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER ? "3px dashed cyan" : "3px solid #d3d3d347"};
                 padding: 1rem;
                 font-family: 'Poppins', sans-serif;
                 font-size: 1.8rem;
                 width: 100%;
                 height: 300px;
+                border-radius: 10px;
+                resize: none;
             }   
 
             .img-container {
@@ -148,6 +171,13 @@ const ComposeTweet = () => {
                 border: none;
                 padding: 1rem 1.6rem;
                 cursor: pointer;
+            }
+
+            .button-container {
+                width: fit-content;
+                display: flex;
+                margin-left: 1.8rem;
+                margin-top: 1.8rem;
             }
 
         `}</style>

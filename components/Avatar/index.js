@@ -2,15 +2,16 @@
 const Avatar = ({ src, alt, email }) => {
 
     return (
-        <div>
+        <>
             <img src={src} alt={alt} />
             <p>{email}</p>
             <style jsx>{`
-                div {
+                {/* div {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                }
+                    width: fit-content;
+                } */}
                 img {
                     width: 50px;
                     height: 50px;
@@ -24,7 +25,7 @@ const Avatar = ({ src, alt, email }) => {
                     font-size: 1.8rem;
                 }
             `}</style>
-        </div>
+        </>
     )
 }
 

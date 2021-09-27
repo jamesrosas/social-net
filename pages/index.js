@@ -1,4 +1,5 @@
 import GitHubIcon from 'components/Icons/GitHub'
+import Loader from 'components/Loader'
 import useUser, { USER_STATES } from 'hooks/useUser'
 import { useRouter } from 'next/dist/client/router'
 import Head from 'next/head'
@@ -48,7 +49,7 @@ export default function Home() {
             </Button>    
           )}
           { user === USER_STATES.NOT_KNOWN && (
-              <p>Loadingggg....</p>
+              <Loader/>
           )}
         </section>
         

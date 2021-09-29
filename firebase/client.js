@@ -58,25 +58,43 @@ export const addNett = ({avatar, content, userId, userName, img}) => {
     })
 }
 
+const mapDevitFromFirebaseToDevitObject = (doc) => {
+    const data = doc.data()
+    const id = doc.id
+    const {createdAt} = data
+                
+
+    return {
+        ...data,
+        id,
+        createdAt: +createdAt.toDate()
+    }
+}
+
+export const listenLatestDevits = (callback) => {
+    return db.collection('netters')
+        .orderBy('createdAt', 'desc')
+        .limit(20)
+        .onSnapshot( ({docs}) => {
+            const newDevits = docs.map( doc => mapDevitFromFirebaseToDevitObject(doc))
+            callback(newDevits)
+        })
+}
+// aqui hacemos uso de onSnapshot() para escuhar todos los cambios en nuestra coleccion de docs, de manera que todos los devits que se creen se veran en tiempo real en nuestra home, con un limite 20 como establecimos con limit()
+
+
 export const fetchLatestNetts = () => {
     return db.collection('netters')
         .orderBy('createdAt', 'desc')
         .get()
         .then(snapshot => {
             return snapshot.docs.map((doc) => {
-                const data = doc.data()
-                const id = doc.id
-                const {createdAt} = data
-                
-
-                return {
-                   ...data,
-                   id,
-                   createdAt: +createdAt.toDate()
-                }
+                return mapDevitFromFirebaseToDevitObject(doc)
             })
         })
 }
+// con fetchLatestNetts estamos trayendo todos los devits que tenemos en la coleccion , y cada vez que refrequemos la home veremos los devits mas recientemente creados, pero no estamos viendo estos devits en tiempo rela en la home cuando son creados, como vimos es necesario refrescar la home. Por tanto este metodo ya no lo usariamos en nuestra home, en su lugar usariamos listenLatestdDevits() para asi poder ver desde la home en tiempo real los devits conforme se van creando.
+
 
 export const uploadImage = (file) => {
     const ref = firebase.storage().ref(`ìmages/${file.name}`)

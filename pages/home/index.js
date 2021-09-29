@@ -1,6 +1,6 @@
 import Devit from "components/Devit"
 import CreateIcon from "components/Icons/Create"
-import { fetchLatestNetts } from "firebase/client"
+import { listenLatestDevits } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useEffect, useState } from "react"
 import Link from "next/link"
@@ -13,17 +13,28 @@ const Timeline = () => {
 
     const user = useUser()
 
-    const getDta = async() => {
-        const response = await fetch('http://localhost:3000/api/statuses/home_timeline')
-        const data = await response.json()
-        setTimeline(data)
-    }
+    // const getDta = async() => {
+    //     const response = await fetch('http://localhost:3000/api/statuses/home_timeline')
+    //     const data = await response.json()
+    //     setTimeline(data)
+    // }
 
     useEffect(() => {
-        user && fetchLatestNetts().then(timeline => {
-            setTimeline(timeline)
-            console.log(timeline)
-        })
+        let unsubscribe
+        if (user) {
+            unsubscribe = listenLatestDevits( newDevits => {
+                setTimeline(newDevits)
+            })
+        }
+
+        return () => unsubscribe && unsubscribe()
+
+        // user && fetchLatestNetts().then(timeline => {
+        //     setTimeline(timeline)
+        //     console.log(timeline)
+        // })
+        // este es el metodo que traemos de client.js que hace el fetch de los devits cda que el componentes se monta por tanto no estaria mostrando los devits en tiempo real, como si sucede con listenLatestDevits()
+
             // getDta()
         
     }, [user])

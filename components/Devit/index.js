@@ -2,10 +2,12 @@ import Avatar from "components/Avatar"
 import useTimeAgo from "hooks/useTimeAgo"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import useDateTimeFormat from "hooks/useDateTimeFormat"
 
 const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
 
     const timeAgo = useTimeAgo(createdAt)
+    const createdAtFormated = useDateTimeFormat(createdAt)
 
     const router = useRouter()
 
@@ -23,7 +25,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
                     <h5>{userName}</h5>
                     <Link href={`/status/${id}`}>
                         <a>
-                            <small>{timeAgo}</small>
+                            <time title={createdAtFormated}>{timeAgo}</time>
                         </a>
                     </Link>
                 </header>
@@ -59,6 +61,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
             }
             a {
                 text-decoration: none;
+                color: grey;
             }
 
         `}</style>

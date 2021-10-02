@@ -1,13 +1,13 @@
 import Devit from "components/Devit"
-import { firestore } from "firebase/admin"
-import { useRouter } from "next/router"
+// import { firestore } from "firebase/admin"
+// import { useRouter } from "next/router"
 
 
 const NettPage = (props) => {
 
-    const router = useRouter()
-    if(router.isFallback) return "loading...."
-    console.log(props)
+    // const router = useRouter()
+    // if(router.isFallback) return "loading...."  *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallbacj de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
+    // console.log(props)
 
     return (
         <>
@@ -25,56 +25,58 @@ const NettPage = (props) => {
     )
 }
 
-export async function getStaticPaths () {
+// ******** with getStaticProps ************************************************
 
-    return {
-        paths: [{ params: { id : 'sOog4Gm4g64m3JwxaOsh' } }],
-        fallback: true
-    }
-}
+// export async function getStaticPaths () {
 
-export async function getStaticProps (context) {
-    const { params } = context
-    const { id } = params
+//     return {
+//         paths: [{ params: { id : 'sOog4Gm4g64m3JwxaOsh' } }],
+//         fallback: true
+//     }
+// }
 
-    return firestore
-        .collection('netters')
-        .doc(id)
-        .get()
-        .then( doc => {
-            const data = doc.data()
-            const id = doc.id
-            const {createdAt} = data
+// export async function getStaticProps (context) {
+//     const { params } = context
+//     const { id } = params
+
+//     return firestore
+//         .collection('netters')
+//         .doc(id)
+//         .get()
+//         .then( doc => {
+//             const data = doc.data()
+//             const id = doc.id
+//             const {createdAt} = data
                 
-            const props = {
-                ...data,
-                id,
-                createdAt: +createdAt.toDate()
-            }
-            return { props }
+//             const props = {
+//                 ...data,
+//                 id,
+//                 createdAt: +createdAt.toDate()
+//             }
+//             return { props }
 
-        })
-        .catch(() => {
-            return { props: {} }
-        })
+//         })
+//         .catch(() => {
+//             return { props: {} }
+//         })
     
-}
+// }
 
 // ******** with gerServerSideProps **********************************************
 
-// export async function getServerSideProps (context) {
-//     const { params, res } = context
-//     const { id } = params
+export async function getServerSideProps (context) {
+    const { params, res } = context
+    const { id } = params
 
-//     const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`)
-//     if (apiResponse.ok) {
-//         const props = await apiResponse.json()
-//         return { props } 
-//     } 
-//     if (res) {
-//         res.writeHead(301, { Location: "/home" }).end()
-//     }
-// }
+    const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`)
+    if (apiResponse.ok) {
+        const props = await apiResponse.json()
+        return { props } 
+    } 
+    if (res) {
+        res.writeHead(301, { Location: "/home" }).end()
+    }
+}
 
 
 // ******* with getInitialProps **************************************************

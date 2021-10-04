@@ -1,5 +1,5 @@
 
-const Button = ({children, background, onClick, disabled}) => {
+const Button = ({children, onClick, disabled}) => {
     return (
         <>
             <button disabled={disabled} onClick={onClick}>
@@ -9,7 +9,7 @@ const Button = ({children, background, onClick, disabled}) => {
                 button {
                     width: fit-content;
                     border-radius: 10px;
-                    background-color: ${background};
+                    background-color: black;
                     padding: 1rem 2rem;
                     color: white;
                     font-family: 'Poppins', sans-serif;

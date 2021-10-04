@@ -50,7 +50,7 @@ const Timeline = () => {
             <section>
                 {timeline.map( devit => {
                     return (
-                        <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content} userId={devit.userId} createdAt={devit.createdAt} img={devit.img}/>
+                        <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content}  createdAt={devit.createdAt} img={devit.img}/>
                     )
                 })}
                 {!timeline && (

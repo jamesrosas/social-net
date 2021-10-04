@@ -1,7 +1,7 @@
 import GitHubIcon from 'components/Icons/GitHub'
 import Loader from 'components/Loader'
 import useUser, { USER_STATES } from 'hooks/useUser'
-import { useRouter } from 'next/dist/client/router'
+import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useEffect } from 'react'
@@ -43,7 +43,7 @@ export default function Home() {
           <Image src="/vercel.svg" alt="social-net logo" width={300} height={300} />
           <h1>Welcome to social-net</h1>
           { user === USER_STATES.NOT_LOGGED && (
-            <Button onClick={handleClick} background="black">
+            <Button onClick={handleClick}>
               <GitHubIcon fill="white" width={24} height={24}/>
               Login with GitHub
             </Button>    

@@ -1,8 +1,8 @@
 import Button from "components/Button"
 import useUser from "hooks/useUser"
-import { useEffect, useState } from "react/cjs/react.development"
+import { useEffect, useState } from "react"
 import { addNett, uploadImage } from "firebase/client"
-import { useRouter } from "next/dist/client/router"
+import { useRouter } from "next/router"
 import Avatar from "components/Avatar"
 
 

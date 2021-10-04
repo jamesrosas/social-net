@@ -80,7 +80,7 @@ export const listenLatestDevits = (callback) => {
             callback(newDevits)
         })
 }
-// aqui hacemos uso de onSnapshot() para escuhar todos los cambios en nuestra coleccion de docs, de manera que todos los devits que se creen se veran en tiempo real en nuestra home, con un limite 20 como establecimos con limit()
+// aqui en listenLatestDevits hacemos uso de onSnapshot() para escuhar todos los cambios en nuestra coleccion de docs, de manera que todos los devits que se creen se veran en tiempo real en nuestra home, con un limite 20 como establecimos con limit()
 
 
 export const fetchLatestNetts = () => {

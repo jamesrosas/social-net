@@ -6,7 +6,7 @@ import Devit from "components/Devit"
 const NettPage = (props) => {
 
     // const router = useRouter()
-    // if(router.isFallback) return "loading...."  *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallbacj de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
+    // if(router.isFallback) return "loading...."  *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
     // console.log(props)
 
     return (
@@ -77,6 +77,8 @@ export async function getServerSideProps (context) {
         res.writeHead(301, { Location: "/home" }).end()
     }
 }
+
+// en getServerSideProps params hace las veces de lo que hace query en getIntialProps
 
 
 // ******* with getInitialProps **************************************************

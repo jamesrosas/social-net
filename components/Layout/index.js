@@ -15,7 +15,10 @@ const Layout = ({children}) => {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                background-color: #80808029;
+                background-image: url("/neon-background.jpg");
+                background-size: cover;
+                background-position: center;
+                background-repeat>: no-repeat;
             }   
             main {
                 display: flex;
@@ -23,7 +26,7 @@ const Layout = ({children}) => {
                 justify-content: center;
                 align-items: center;
                 width: 100%;
-                max-width: 500px;
+                max-width: 415px;
                 height: 100vh;
                 max-height: 825px;
                 background-color: white;
@@ -35,6 +38,16 @@ const Layout = ({children}) => {
                     height: fit-content;
                 }
             }
+
+            @media (min-width: 800px){
+                main {
+                    width: 400px;
+                    height: 100vh;
+                    max-height: 700px;
+                }
+            }
+
+
         `}</style>
         </>
     )

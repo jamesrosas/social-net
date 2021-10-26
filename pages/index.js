@@ -3,10 +3,11 @@ import Loader from 'components/Loader'
 import useUser, { USER_STATES } from 'hooks/useUser'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useEffect } from 'react'
 import Button from '../components/Button/index'
-import { loginWithGitHub } from '../firebase/client'
+import { loginWithGitHub, loginWithGoogle } from '../firebase/client'
+import GoogleIcon from 'components/Icons/Google'
+import AnimateLogo from 'components/AnimateLogo'
 
 
 export default function Home() {
@@ -18,35 +19,39 @@ export default function Home() {
     user && router.replace('/home')
   }, [user])
 
-  const handleClick = () => {
+  const handleClickGitHub = () => {
     loginWithGitHub().catch( err => {
       console.log(err)
     })
   }
-// const hanldeClick = async() => {
-//     try {
-//       const user = await loginWithGitHub()
-//       setUser(user)
-//     } catch(err) {
-//         console.log(err)
-//     }
-// } MISMO HANDLECLICK PERO CON ASYNC AWAIT EN LUGAR DE PROMESAS TRADICIONALES COMO LA ANTERIOR
 
+  const handleClickGoogle = () => {
+    loginWithGoogle().catch( err => {
+      console.log(err)
+    })
+  }
+  
   return (
     <>
         <Head>
-          <title>Social Network</title>
+          <title>Social Net</title>
           <meta name="description" content="welcome to your social-net" />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon-web.png" />
         </Head>
         <section>
-          <Image src="/vercel.svg" alt="social-net logo" width={300} height={300} />
+          <AnimateLogo/>
           <h1>Welcome to social-net</h1>
           { user === USER_STATES.NOT_LOGGED && (
-            <Button onClick={handleClick}>
-              <GitHubIcon fill="white" width={24} height={24}/>
-              Login with GitHub
-            </Button>    
+            <>
+              <Button onClick={handleClickGitHub}>
+                <GitHubIcon fill="black" width={24} height={24}/>
+                Login with GitHub
+              </Button>  
+              <Button onClick={handleClickGoogle}>
+                <GoogleIcon width={24} height={24}/>
+                Login with Google
+              </Button>
+            </>
           )}
           { user === USER_STATES.NOT_KNOWN && (
               <Loader/>
@@ -57,9 +62,9 @@ export default function Home() {
 
         h1 {
           font-family:'Poppins', sans-serif;
-          font-size: 28px;
+          font-size: 17px;
           font-weigth: 600;
-          margin-bottom: 2rem;
+          margin-bottom: 4rem;
           text-align: center;
         }
 

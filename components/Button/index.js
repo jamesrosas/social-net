@@ -9,23 +9,30 @@ const Button = ({children, onClick, disabled}) => {
                 button {
                     width: fit-content;
                     border-radius: 10px;
-                    background-color: black;
+                    background-color: white;
                     padding: 1rem 2rem;
-                    color: white;
+                    color: black;
                     font-family: 'Poppins', sans-serif;
                     font-size: 18px;
                     font-weight: 500;
-                    border: none;
+                    border: 2px solid black;
                     display: flex;
                     align-items: center;
                     margin: 0 auto;
+                    justify-content: space-between;
+                    gap: 1.5rem;
+                    cursor: pointer;
                 }
                 button[disabled]{
                     pointer-events: none;
                     opacity: .2;
                 }
                 button:hover {
-                    opacity: .5;
+                    opacity: .7;
+                }
+
+                button + button{
+                    margin: 2rem auto 0 auto;
                 }
                 
 

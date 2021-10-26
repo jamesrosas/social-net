@@ -1,6 +1,7 @@
 import Devit from "components/Devit"
 import { firestore } from "firebase/admin"
 import { useRouter } from "next/router"
+import BackNav from "components/BackNav"
 
 
 const NettPage = (props) => {
@@ -13,6 +14,7 @@ const NettPage = (props) => {
     return (
         <>
             <div>
+                <BackNav href="/home" />
                 <Devit {...props}/>
             </div>
             <style jsx>{`

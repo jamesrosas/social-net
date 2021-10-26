@@ -15,6 +15,7 @@ const useUser = () => {
     useEffect( () => {
         onAuthStateChanged(user => setUser(user))
       }, [])
+    // creo que la desuscripcion, para cuando hacemos logout puede ser mas en este useEffect porque estamos usando una funcion que todo el tiempo esta viendo el cambio del estado del usuario.
 
     useEffect(() => {
         user === USER_STATES.NOT_LOGGED && router.push('/')

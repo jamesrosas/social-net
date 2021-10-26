@@ -1,11 +1,13 @@
 import Devit from "components/Devit"
 import CreateIcon from "components/Icons/Create"
-import { listenLatestDevits } from "firebase/client"
+import { listenLatestDevits, signOut } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import HomeIcon from "components/Icons/Home"
 import Head from "next/head"
+import { useRouter } from "next/router"
+import Loader from "components/Loader"
 
 const Timeline = () => {
 
@@ -13,11 +15,7 @@ const Timeline = () => {
 
     const user = useUser()
 
-    // const getDta = async() => {
-    //     const response = await fetch('http://localhost:3000/api/statuses/home_timeline')
-    //     const data = await response.json()
-    //     setTimeline(data)
-    // }
+    const router = useRouter()
 
     useEffect(() => {
         let unsubscribe
@@ -28,16 +26,14 @@ const Timeline = () => {
         }
 
         return () => unsubscribe && unsubscribe()
-
-        // user && fetchLatestNetts().then(timeline => {
-        //     setTimeline(timeline)
-        //     console.log(timeline)
-        // })
-        // este es el metodo que traemos de client.js que hace el fetch de los devits cda que el componentes se monta por tanto no estaria mostrando los devits en tiempo real, como si sucede con listenLatestDevits()
-
-            // getDta()
         
     }, [user])
+
+    const handleLogOut = () => {
+        signOut().then( () => {
+            router.replace('/')
+        })
+    }
 
     return (
         <>
@@ -45,7 +41,10 @@ const Timeline = () => {
                 <title>Inicio / Home</title>
             </Head>
             <header>
-                <p>Incio</p>
+                <ul>
+                    <li>Social-net</li>
+                    <li onClick={handleLogOut}>Logout</li>
+                </ul>
             </header>
             <section>
                 {timeline.map( devit => {
@@ -53,24 +52,26 @@ const Timeline = () => {
                         <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content}  createdAt={devit.createdAt} img={devit.img}/>
                     )
                 })}
-                {!timeline && (
-                    <div className="loader">
-                        <span></span>
+                {timeline.length === 0 && (
+                    <div className="home-loader_container">
+                        <Loader/>
                     </div>
                 )}
             </section>
-            <nav>
-                <Link href="/"> 
-                    <a>
-                        <HomeIcon fill="darkcyan"  width={35} height={35}/>
-                    </a>
-                </Link>
-                <Link href="/compose/tweet"> 
-                    <a>
-                        <CreateIcon stroke="darkcyan" width={35} height={35} />
-                    </a>
-                </Link>
-            </nav>
+            <footer>
+                <nav>
+                    <Link href="/"> 
+                        <a>
+                            <HomeIcon fill="cyan"  width={35} height={35}/>
+                        </a>
+                    </Link>
+                    <Link href="/compose/tweet"> 
+                        <a title="Create Nett">
+                            <CreateIcon stroke="#8a0891" width={35} height={35} />
+                        </a>
+                    </Link>
+                </nav>
+            </footer>
 
             <style jsx>{`
 
@@ -88,6 +89,22 @@ const Timeline = () => {
                     width: 100%;
                     max-width: 500px;
                     border-bottom: 1px solid grey;
+                    font-size: 18px;
+                }
+                header ul {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                }
+                header ul li{
+                    list-style: none;
+                    color: white;
+                    background: black;
+                    width: fit-content;
+                    height: fit-content;
+                    padding: 2px 8px;
+                    border-radius: 5px;
+                    cursor: pointer;
                 }
 
                 section {
@@ -97,6 +114,18 @@ const Timeline = () => {
                     /* height: fit-content; */
                     overflow: auto;
                     height: 100vh;
+                }
+                section::-webkit-scrollbar{
+                    width: 5px;
+                    background-color: #ffffff;
+                }
+                section::-webkit-scrollbar-thumb{
+                    background: rgb(0 0 0 / 30%);
+                    border-radius: 20%;
+                }
+
+                footer {
+                    width: 100%;
                 }
 
                 nav {
@@ -116,26 +145,24 @@ const Timeline = () => {
                 }
 
                 nav a:hover{
-                    background: #dedede;
+                    background: #dedede9c;
                     border-radius: 10px;
                 }
 
-                header, nav {
+                header, footer {
                     z-index: 20;
-                    background: #ebfcff;
+                    /* background-image: linear-gradient(101deg, #d200dd 20%, cyan); */
+                    background-image: linear-gradient(101deg, #d200ddb3 20%, cyan);
                 }
 
-                .loader {
+                .home-loader_container {
                     width: 100%;
-                    height: 100vh;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
 
-                span {
-                    width: 30px;
-                    height: 30px;
-                    background-color: blue;
-                    animation: rotate infinite 1s ease-in-out;
-                }
                 @keyframes rotate {
                     from {
                         transform: rotate(0)

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { addNett, uploadImage } from "firebase/client"
 import { useRouter } from "next/router"
 import Avatar from "components/Avatar"
+import BackNav from "components/BackNav"
+import Loader from "components/Loader"
 
 
 const COMPOSE_STATES = {
@@ -28,16 +30,21 @@ const ComposeTweet = () => {
     const [drag, setDrag] = useState(DRAG_IMAGE_STATES.NONE)
     const [task, setTask] = useState(null)
     const [imageURL, setImageURL] = useState(null)
+    const [loadImage, setLoadImage] = useState(false)
 
     const user = useUser()
     const router = useRouter()
 
     useEffect(() => {
         if (task) {
-          const onProgress = () => {}
+          const onProgress = () => {
+              console.log('cargando imagen...')
+              setLoadImage(true)
+          }
           const onError = () => {}
           const onComplete = () => {
             console.log('onComplete')
+            setLoadImage(false)
             task.snapshot.ref.getDownloadURL().then((url) => setImageURL(url))
           }
           task.on("state_changed", onProgress, onError, onComplete)
@@ -90,6 +97,7 @@ const ComposeTweet = () => {
     
     return (
         <>
+        <BackNav href="/home" />
         <section>
             {user && (
                 <div className="avatar-container">
@@ -103,6 +111,12 @@ const ComposeTweet = () => {
                 onDrop={handleDrop}
                 placeholder="¿Qué esta pasando?">
                 </textarea>
+                {loadImage && (
+                    <div className="img-container">
+                        <p>Cargando imagen...</p>
+                        <Loader />
+                    </div>
+                )}
                 {imageURL && (
                     <div className="img-container">
                         <button onClick={() => setImageURL(null)}>x</button>
@@ -153,6 +167,23 @@ const ComposeTweet = () => {
 
             .img-container {
                 position: relative;
+                background-color: #dedede;
+                width: 100%;
+                min-height: 140px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                margin-top: 1rem;
+            }
+            .img-container p{
+                font-family: 'Poppins', sans-serif;
+                font-size: 1.6rem;
+                color: grey;
+                margin-top: 1rem;
+                padding-top: 2rem;
+                margin-bottom: -1rem;
             }
 
             img {

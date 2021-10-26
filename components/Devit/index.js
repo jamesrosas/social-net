@@ -23,6 +23,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
             <div>
                 <header>
                     <h5>{userName}</h5>
+                    <span></span>
                     <Link href={`/status/${id}`}>
                         <a>
                             <time title={createdAtFormated}>{timeAgo}</time>
@@ -44,11 +45,19 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
                 font-size: 1.8rem;
                 border-bottom: 1px solid #80808057;
             }
+
+            header {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                column-gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
             h5 {
-                margin-bottom: 1rem;
                 font-weight: 600;
                 font-size: 1.9rem;
             }
+            
             small {
                 color: grey;
                 font-size: 1.6rem;
@@ -62,6 +71,14 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
             a {
                 text-decoration: none;
                 color: grey;
+                font-size: 1.4rem;
+            }
+            span {
+                width: 3px;
+                height: 3px;
+                background: grey;
+                border-radius: 50%;
+                border: none;
             }
 
         `}</style>

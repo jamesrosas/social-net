@@ -57,6 +57,9 @@ const Timeline = () => {
                         <Loader/>
                     </div>
                 )}
+                {timeline.length > 0 && (
+                    <span>Estás al día</span>
+                )}
             </section>
             <footer>
                 <nav>
@@ -124,6 +127,16 @@ const Timeline = () => {
                     border-radius: 20%;
                 }
 
+                span {
+                    width: 100%;
+                    padding: 1.8rem .5rem .5rem .5rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: grey;
+                    font-size: 1.5rem;
+                }
+
                 footer {
                     width: 100%;
                 }
@@ -169,6 +182,28 @@ const Timeline = () => {
                     }
                     to {
                         transform: rotate(360deg)
+                    }
+                }
+
+                @media (max-width: 415px){
+                    section{
+                        margin: 45px 0;
+                        padding-bottom: 55px;
+                    }
+                    span {
+                        margin-bottom: -2.5rem;
+                        padding-top: 2.5rem;
+                        width: 100vw;
+                    }
+
+                    header {
+                        position: fixed;
+                    }
+
+                    nav {
+                        position: fixed;
+                        background-image: linear-gradient(101deg, #d200ddb3 20%, cyan);
+                        backdrop-filter: blur(2px);
                     }
                 }
             `}</style>

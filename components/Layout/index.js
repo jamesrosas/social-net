@@ -1,8 +1,13 @@
+import Head from "next/head"
+
 
 const Layout = ({children}) => {
     return (
         <>
         <div className="container">
+            <Head>
+                <link rel="icon" href="/favicon-web.png" />
+            </Head>
             <main>
                 {children}
             </main>

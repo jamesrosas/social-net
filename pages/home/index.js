@@ -38,7 +38,7 @@ const Timeline = () => {
     return (
         <>
             <Head>
-                <title>Inicio / Home</title>
+                <title>Home</title>
             </Head>
             <header>
                 <ul>

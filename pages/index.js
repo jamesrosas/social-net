@@ -35,7 +35,7 @@ export default function Home() {
     <>
         <Head>
           <title>Social Net</title>
-          <meta name="description" content="welcome to your social-net" />
+          <meta name="description" content="welcome to social-net" />
           <link rel="icon" href="/favicon-web.png" />
         </Head>
         <section>

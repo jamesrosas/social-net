@@ -37,6 +37,66 @@ export const onAuthStateChanged = (onChange) => {
             onChange(normalizedUser)
         })
 }
+// ESTE ES EL BLOQUE YA FUNCIONA;
+// export const signUpWithEmailAndPassword = (email, pass, userName) => {
+//     return firebase
+//         .auth()
+//         .createUserWithEmailAndPassword(email,pass)
+//         .then(() => {
+//             const usuario = firebase.auth().currentUser
+//             usuario.updateProfile({
+//                 displayName: userName,
+//                 photoURL: "https://i.postimg.cc/d3f6FXDs/default-user.png"
+//             })
+//         })
+// }
+
+
+// ESTE ES EL BLOQUE PARA PROBAR LA VERIFICACION DE LA CUENTA POR EMAIL;
+//ya funciona la verificacion de correo ahora solo falta mejorara la UX, ya que cuando me registro si me envia el correo de verificacion,pero en la app solo veo el formulario lleno y no me esta saliendo ningun mensaje de que necesito verificar para poder ingresar a la cuenta( por supuesto tambien tengo que hacer real esto en las reglas de seguridad de la consola de firebase para que asi solamente puedan ingresar los usuarios verificados)
+// EN LA CLASE 8 DEL CURSO FIREBASE PARA LA WEB VEMOS LO DEL CORREO DE VERIFICACION
+
+export const signUpWithEmailAndPassword = (email, pass, userName) => {
+    return firebase
+        .auth()
+        .createUserWithEmailAndPassword(email,pass)
+        .then(() => {
+                    const usuario = firebase.auth().currentUser
+
+                    usuario.updateProfile({
+                        displayName: userName,
+                        photoURL: "https://i.postimg.cc/d3f6FXDs/default-user.png"
+                    })
+
+                    const redirect = {
+                        url: "https://social-net-phi.vercel.app"
+                    }
+
+                    usuario.sendEmailVerification(redirect)
+
+                    firebase.auth().signOut()
+
+                })
+}
+
+
+export const signInWithEmailAndPassword = (email, pass) => {
+    return firebase
+        .auth()
+        .signInWithEmailAndPassword(email, pass)
+            
+}
+
+export const sendEmailToResetPassword = (email) => {
+
+    const redirect = {
+        url: "https://social-net-phi.vercel.app"
+    }
+    
+    return firebase
+        .auth()
+        .sendPasswordResetEmail(email, redirect)
+}
 
 export const loginWithGitHub = () => {
     const githubProvider = new firebase.auth.GithubAuthProvider()

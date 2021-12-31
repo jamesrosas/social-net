@@ -1,5 +1,9 @@
+import { useState } from "react";
 
-const Button = ({children, onClick, disabled}) => {
+const Button = ({children, onClick, disabled, invertColor}) => {
+
+    const [invert, setInvert] = useState(invertColor)
+
     return (
         <>
             <button disabled={disabled} onClick={onClick}>
@@ -15,13 +19,14 @@ const Button = ({children, onClick, disabled}) => {
                     font-family: 'Poppins', sans-serif;
                     font-size: 18px;
                     font-weight: 500;
-                    border: 2px solid black;
+                    border:  ${invert ? "2px solid grey" : "2px solid black"};
                     display: flex;
                     align-items: center;
-                    margin: 0 auto;
+                    margin: 1rem auto;
                     justify-content: space-between;
                     gap: 1.5rem;
                     cursor: pointer;
+                    filter: ${invert ? "invert(1)" : "invert(0)"}
                 }
                 button[disabled]{
                     pointer-events: none;
@@ -32,7 +37,7 @@ const Button = ({children, onClick, disabled}) => {
                 }
 
                 button + button{
-                    margin: 2rem auto 0 auto;
+                    margin: 1rem auto 0 auto;
                 }
                 
 

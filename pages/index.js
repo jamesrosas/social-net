@@ -9,6 +9,7 @@ import { loginWithGitHub, loginWithGoogle, signUpWithEmailAndPassword, signInWit
 import GoogleIcon from 'components/Icons/Google'
 import AnimateLogo from 'components/AnimateLogo'
 import LoginModal from 'components/LoginModal'
+import Swal from 'sweetalert2'
 
 export default function Home() {
 
@@ -18,8 +19,6 @@ export default function Home() {
   const [modal, setModal] = useState(false)
   const [modal2, setModal2] = useState(false)
   const [errorMessage, setErrorMessage] = useState(false)
-  const [verfication, setVerification] = useState(false)
-  const [completeVerification,setCompleteVerification] = useState(false)
 
   const [email, setEmail] = useState("")
   const [pass , setPass] = useState("")
@@ -52,17 +51,50 @@ export default function Home() {
     setPass(e.target.value)
   }
 
+  const alertMessage = Swal.mixin({
+    showConfirmButton: true,
+    confirmButtonText: 'OK',
+    customClass: {
+      container: 'alert-container',
+      confirmButton: 'btn-class',
+      content: 'content-class',
+      popup: 'popup-class',
+      htmlContainer: 'letra-style'
+    },
+    buttonsStyling: false,
+    backdrop:`rgba(0,0,123,0.4)`,
+    showClass:{
+      popup: 'swal2-show',
+      backdrop: 'swal2-backdrop-show',
+      icon: 'swal2-icon-show'
+    },
+    hideClass:{
+      popup: 'swal2-hide',
+      backdrop: 'swal2-backdrop-hide',
+      icon: 'swal2-icon-hide'
+    },
+  })
+
 
   const handleSubmitSignUp = (e) => {
     e.preventDefault()
     console.log(email, pass)
     signUpWithEmailAndPassword(email, pass, userName)
       .then(() => {
-        setVerification(true)
+        alertMessage.fire({
+          text: 'Te hemos enviado un email para verificar tu cuenta',
+          color: '#05b605',
+          icon: "info"
+        })
         setEmail("")
         setPass("")
         setUserName("")
-      }).catch(({message})=> alert(message))
+      }).catch(({message}) => alertMessage.fire({
+        text: message,
+        icon: "info",
+        color: '#ff0000'
+      }))
+      // aqui puedo usar una condicional para que si el message.includes("is alredy used") entonces muestre un mensaje diceindo lo mismo pero en español.
       // aqui se deberia lanzar un popUp que diga que "esta direccion de correo ya esta siendo usada por otra cuenta"
   }
 
@@ -71,9 +103,12 @@ export default function Home() {
     signInWithEmailAndPassword(email, pass)
       .then(result => {
         if(!result.user.emailVerified){
+          alertMessage.fire({
+            text: 'Primero debes verificar tu email',
+            icon: "info",
+            color: '#ff0000'
+          })
           signOut()
-          setCompleteVerification(true)
-          //esto deberia mostrar un popUp que diga que primero debe verificar el email
         }
       })
       .catch(() => setErrorMessage(true))
@@ -81,7 +116,11 @@ export default function Home() {
 
   const handleClickResetPass = () =>{
       sendEmailToResetPassword(email)
-        .then(() => alert("te hemos enviado en email para reestablecer tu contraseña"))
+        .then(() => alertMessage.fire({
+          text: 'Te hemos enviado un email para reestablecer tu contraseña',
+          color: '#05b605',
+          icon: "info"
+        }))
   }
 
   const handleClickGitHub = () => {
@@ -127,9 +166,6 @@ export default function Home() {
                       </p>
                     </>
                   )}
-                  {completeVerification && (
-                    <p className='error'>Aun no has verificado tu email!</p>
-                  ) }
                   <Button>ingresar</Button>
                   <p className="reset-pass" onClick={handleClickSignUp}>Aun no tienes cuenta? Registrate aquí</p>
                 </form>
@@ -142,9 +178,6 @@ export default function Home() {
                   <Button>
                     Registrarse
                   </Button>
-                  {verfication && (
-                    <p className='verify'>verifica tu email para ingresar</p>
-                  )}
                 </form>
                 <p className='login-with'>or</p>
                 <Button onClick={handleClickGitHub}>
@@ -234,6 +267,13 @@ export default function Home() {
           margin-bottom: 1rem;
           border-radius: 8px;
           border-radius: 8px 8px 60px 60px;
+        }
+
+        .letra-style{
+          font-size: 20px;
+          color: green;
+          border: none;
+          background: red;
         }
         
       `}</style>

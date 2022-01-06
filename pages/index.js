@@ -236,7 +236,7 @@ export default function Home() {
           border: 1px solid black;
         }
 
-        .error, .verify {
+        .error {
           color: red;
           background: pink;
           padding: 5px;
@@ -257,6 +257,7 @@ export default function Home() {
           background: black;
           border-radius: 5px;
           padding: 0 5px;
+          cursor: pointer;
         }
         .login-with {
           font-family:'Poppins', sans-serif;
@@ -267,13 +268,6 @@ export default function Home() {
           margin-bottom: 1rem;
           border-radius: 8px;
           border-radius: 8px 8px 60px 60px;
-        }
-
-        .letra-style{
-          font-size: 20px;
-          color: green;
-          border: none;
-          background: red;
         }
         
       `}</style>

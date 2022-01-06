@@ -132,6 +132,14 @@ export const addNett = ({avatar, content, userId, userName, img}) => {
     })
 }
 
+// con esta funcion quiero guardar en una nueva coleccion llamada "biographies" lo que cada usuario quiera colocar en  su seccion de bigrafia de su perfil
+export const addBiography = ({ content, userId }) => {
+    return db.collection('biographies').add({
+        content,
+        userId
+    })
+}
+
 const mapDevitFromFirebaseToDevitObject = (doc) => {
     const data = doc.data()
     const id = doc.id
@@ -165,9 +173,18 @@ export const fetchLatestNetts = () => {
         })
 }
 
-
+// esta funcion lo que esta haciendo es subir de una vez la imagen al storage de firebase, lo cual tendria que pasar solamente si el usuario le da publicar al netter y no antes como esta pasando por ahora
 export const uploadImage = (file) => {
     const ref = firebase.storage().ref(`ìmages/${file.name}`)
     const task = ref.put(file)
     return task
+}
+
+export const updateUserProfile = ({userName, avatar}) => {
+    return firebase
+        .auth()
+        .currentUser.updateProfile({
+            displayName: userName,
+            photoURL: avatar
+        })
 }

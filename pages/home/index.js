@@ -15,6 +15,8 @@ const Timeline = () => {
 
     const user = useUser()
 
+    console.log(user)
+
     const router = useRouter()
 
     useEffect(() => {
@@ -34,6 +36,8 @@ const Timeline = () => {
             router.replace('/')
         })
     }
+
+    console.log(timeline)
 
     return (
         <>
@@ -71,6 +75,13 @@ const Timeline = () => {
                     <Link href="/compose/tweet"> 
                         <a title="Create Nett">
                             <CreateIcon stroke="#8a0891" width={35} height={35} />
+                        </a>
+                    </Link>
+                    <Link href="/profile">
+                        <a tile="Profile">
+                            {user && (
+                                <img className="icon-profile" src={user.avatar} width={35} height={35}></img>
+                            )}
                         </a>
                     </Link>
                 </nav>
@@ -166,6 +177,13 @@ const Timeline = () => {
                     z-index: 20;
                     /* background-image: linear-gradient(101deg, #d200dd 20%, cyan); */
                     background-image: linear-gradient(101deg, #d200ddb3 20%, cyan);
+                }
+
+                .icon-profile{
+                    border-radius: 50%;
+                    border: none;
+                    object-fit: cover;
+                    border: 0.5px solid white;
                 }
 
                 .home-loader_container {

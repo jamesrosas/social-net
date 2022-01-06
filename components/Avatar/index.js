@@ -16,6 +16,7 @@ const Avatar = ({ src, alt, email }) => {
                     width: 50px;
                     height: 50px;
                     border-radius: 50%;
+                    object-fit: cover;
                 }    
                 img + p {
                     margin-left: 2rem;

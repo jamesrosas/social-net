@@ -86,9 +86,14 @@ const ComposeTweet = () => {
         setDrag(DRAG_IMAGE_STATES.NONE)
         
         const file = e.dataTransfer.files[0]
+        console.log(e.dataTransfer)
         console.log(e.dataTransfer.files[0])
         const task = uploadImage(file)
         setTask(task)
+    }
+
+    const handleClickPhoto = () => {
+        console.log("alert con imagen")
     }
 
     console.log(task)
@@ -123,6 +128,7 @@ const ComposeTweet = () => {
                         <img src={imageURL} />  
                     </div>
                 )}
+                <span onClick={handleClickPhoto}>Foto +</span>
                 <div className="button-container"> 
                     <Button disabled={isButtonDisabled} background="black">Nettear</Button>
                 </div>
@@ -202,6 +208,17 @@ const ComposeTweet = () => {
                 border: none;
                 padding: 1rem 1.6rem;
                 cursor: pointer;
+            }
+
+            span {
+                background: black;
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                padding: 5px 8px;
+                width: fit-content;
+                border-radius: 5px;
+                margin-top: 1rem;
             }
 
             .button-container {

@@ -143,7 +143,9 @@ export const addBiography = ({ content, userId }) => {
 const mapDevitFromFirebaseToDevitObject = (doc) => {
     const data = doc.data()
     const id = doc.id
-    const {createdAt} = data          
+    const {createdAt} = data     
+    
+    //tengo que hacer uso del userId , el cual saco de data , para de esta manera filtrar los post de un usuario en especifico y asi mostrarlos en su perfil
 
     return {
         ...data,
@@ -180,11 +182,28 @@ export const uploadImage = (file) => {
     return task
 }
 
-export const updateUserProfile = ({userName, avatar}) => {
-    return firebase
-        .auth()
-        .currentUser.updateProfile({
-            displayName: userName,
-            photoURL: avatar
+
+export const updateUserProfile = ({name, avatarUrl}, callback) => {
+    
+    const currentUser = firebase.auth().currentUser
+    
+    const ifAvatarUrl = avatarUrl ? avatarUrl : currentUser.photoURL
+    const ifUserName = name ? name : currentUser.displayName
+    const userId = currentUser.uid
+
+    currentUser.updateProfile({
+        displayName: ifUserName,
+        photoURL: ifAvatarUrl
+    })
+    
+    db.runTransaction(async transaction => {
+        const query = await db.collection("netters")
+            .where("userId", "==", userId)
+            .get()
+    
+        query.forEach( doc => {
+            transaction.update(doc.ref,{avatar: ifAvatarUrl, userName: ifUserName})
         })
+    }).then(callback)
+
 }

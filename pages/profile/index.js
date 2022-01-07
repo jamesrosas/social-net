@@ -47,66 +47,10 @@ const Profile = () => {
 
     const handleSubmitUserName = (e) => {
         e.preventDefault()
-        updateUserProfile({userName: newName})
+        updateUserProfile({name: newName}, () => Swal.fire("actualización completada") )
         console.log("nombre actualizado")
     }
 
-    const handleClickUpdateAvatar = async(e) => {
-        const { value: file } = await Swal.fire({
-            title: 'Select image',
-            input: 'file',
-            inputAttributes: {
-              'accept': 'image/*',
-              'aria-label': 'Upload your profile picture'
-            }
-            // averiguar como ponerle un evento a este input de sweetalert2 para que pueda escuchar el evento de onChange y asi ver si e.target.files[0]
-          })
-
-          
-          
-          if (file) {
-            console.log(file)
-
-            const reader = new FileReader()
-            reader.onload = (e) => {
-              console.log(e)  
-              Swal.fire({
-                title: 'Your uploaded picture',
-                imageUrl: e.target.result,
-                imageAlt: 'The uploaded picture',
-                allowOutsideClick: false,
-                showCancelButton: true
-              }).then(result => {
-                  if(result.isConfirmed){
-                      Swal.fire({
-                          title: "updated avatar",
-                          icon: "success",
-                          didOpen: () => {
-                            console.log("ejecutando funcion que actualiza la imagen de avatar")
-                            console.log(inputFileValue)
-                            const task = uploadImage(file)
-                            setTask(task)
-                          }
-                      }).then((result) => {
-                          if(result.isConfirmed){
-                            console.log("updating ultimate")
-                            console.log(imageUrlStorage)
-                            actualizarImg()
-                          }
-                      })
-                  }
-              })
-              console.log(e.target)
-              console.log(e.target.result)
-              console.log("rama con el sweetAlert")
-            }
-            reader.readAsDataURL(file)
-          }
-    }
-
-
-
-    // esta es la funcion que le tengo que agregar al evento onChange del input de sweetalert;
     const handleChangeInputFile = (e) => {
         const file = e.target.files[0]
         console.log(e.target)
@@ -135,14 +79,13 @@ const Profile = () => {
 
     // APARENTEMENTE YA ESTA FUNCIONANDO LA ACTUALIZACION DEL AVATAR, LA VECEZ QUE NO SE ACTULIZABA LA IMAGEN SE PUEDE DEBER A QUE FIREBASE SE ESTA DEMORANDO EN EJECUTAR DICHO PROCESO;
     const actualizarImg = () => {
-        updateUserProfile({avatar: imageUrlStorage})
-            .catch(({message}) => console.log(message))
+        updateUserProfile({avatarUrl: imageUrlStorage}, () => Swal.fire("actualización completada") )
         console.log("ejecutando actualizacion de avatar")
         console.log(user)
     }
 
 // para listar todos los netters que ha publicado;
-// if curentUser.uid === user.uid => fetchLatestDevit()
+// traer la coleccion y filtrarla con el metodo where("userId", "==", user.uid) de firebase
 
     return (
         <>
@@ -152,7 +95,7 @@ const Profile = () => {
                     <>
                         <div className="avatar-container">
                             <img className="avatar-img" src={imageUrlStorage ? imageUrlStorage : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
-                            <span onClick={handleClickUpdateAvatar} className="icon-container">
+                            <span  className="icon-container">
                                 <FontAwesomeIcon icon={faCamera} size="xs" />
                             </span>
                         </div>

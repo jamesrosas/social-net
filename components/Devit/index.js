@@ -19,7 +19,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
     return (
         <>
         <article onClick={handleClick}>
-            <Avatar src={avatar} alt={userName}/>
+            <Avatar src={avatar} alt={userName} />
             <div>
                 <header>
                     <h5>{userName}</h5>
@@ -46,6 +46,12 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
                 border-bottom: 1px solid #80808057;
             }
 
+            .avatar-image {
+                border: none;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+            }
             header {
                 display: flex;
                 align-items: center;

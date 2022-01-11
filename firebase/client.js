@@ -164,6 +164,29 @@ export const listenLatestDevits = (callback) => {
         })
 }
 
+export const getAllUserPosts = (callback) => {
+    const currentUser = firebase.auth().currentUser
+
+    return db.collection('netters')
+        .where("userId", "==", currentUser.uid )
+        .orderBy('createdAt', 'desc')
+        .onSnapshot( ({docs}) => {
+            const newDevits = docs.map( doc => mapDevitFromFirebaseToDevitObject(doc))
+            callback(newDevits)
+        })
+}
+
+export const getUserProfile = (uid , callback) => {
+
+    return db.collection('netters')
+        .where("userId", "==", uid )
+        .orderBy('createdAt', 'desc')
+        .onSnapshot( ({docs}) => {
+            const newDevits = docs.map( doc => mapDevitFromFirebaseToDevitObject(doc))
+            callback(newDevits)
+        })
+}
+
 export const fetchLatestNetts = () => {
     return db.collection('netters')
         .orderBy('createdAt', 'desc')

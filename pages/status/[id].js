@@ -15,6 +15,7 @@ const NettPage = (props) => {
         <>
             <div>
                 <BackNav href="/home" />
+                {/* <p>{props.userName}</p> */}
                 <Devit {...props}/>
             </div>
             <style jsx>{`
@@ -50,12 +51,26 @@ export async function getStaticProps (context) {
             const data = doc.data()
             const id = doc.id
             const {createdAt} = data
-                
+            // const {createdAt, userName, avatar, content} = data
+
+            // const props = {
+            //     userName,
+            //     avatar,
+            //     content,
+            //     id,
+            //     createdAt: +createdAt.toDate()
+            // }
+
+            console.log(data)
+            console.log(doc)
+            console.log(data.userId)
+
             const props = {
                 ...data,
                 id,
                 createdAt: +createdAt.toDate()
             }
+                
             return { props }
 
         })

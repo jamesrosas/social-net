@@ -5,17 +5,33 @@ import { useState, useEffect } from "react"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Swal from "sweetalert2"
 import { faCamera } from "@fortawesome/free-solid-svg-icons"
+import Devit from "components/Devit"
+import Loader from "components/Loader"
+import { getAllUserPosts, listenLatestDevits } from "firebase/client"
 
 const Profile = () => {
 
     const user = useUser()
 
+    const [userTimeline , setUserTimeline] = useState([])
     const [newName, setNewName] = useState("")
     const [imageInput, setImageInput] = useState("")
     const [imageUrlStorage, setImageUrlStorage] = useState("")
     const [task, setTask] = useState(null)
 
     const [inputFileValue, setInputFileValue] = useState(null)
+
+    useEffect(() => {
+        let unsubscribe
+        if (user) {
+            unsubscribe = getAllUserPosts( newDevits => {
+                 setUserTimeline(newDevits)
+            })
+        }
+
+        return () => unsubscribe && unsubscribe()
+        
+    }, [user])
 
     useEffect(() => {
         if (task) {
@@ -120,14 +136,23 @@ const Profile = () => {
                 {inputFileValue && (
                     <img className="img-preview" src={inputFileValue} width={200} height={200} />
                 )}
-                {/*  Aqui en lugar de usar un form que este visible todo el tiempo lo que puedo hacer es hacer uso de un alert tipo input que sea el que capture el valor, esto para mejorar la UX y se vea mas llamativo, ademas a este alert se le pude colocar los botones de ok y cancelar para que el usuario esoja , y segun su respuesta le de un feeback como de "nombre actulizaco" y si escoje cancelar pues que solo se cierre el modal y ya. De igual modo para cuando se queiere subir una nueva imagen de perfil*/}
-
-                {/* here fetchLatestDevits from currentUSer */}
+                <h3>Tus Netts</h3>
+                <article>
+                    {userTimeline.map( posts => {
+                        return (
+                            <Devit key={posts.id} id={posts.id} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img}/>
+                        )
+                    })}
+                    {userTimeline.lenght === 0 && (
+                        <Loader/>
+                    )} 
+                </article>
             </section>
 
             <style jsx>{`
                 section {
                     height: 100%;
+                    overflow: clip;
                 }
 
                 .avatar-container {
@@ -173,6 +198,12 @@ const Profile = () => {
                 .img-preview {
                     object-fit: cover;
                     margin: 0 auto;
+                }
+
+                article {
+                    width: 100%;
+                    overflow: auto;
+                    height: 45%;
                 }
 
             `}</style>

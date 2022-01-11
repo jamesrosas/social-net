@@ -4,10 +4,12 @@ import { useRouter } from "next/router"
 import Link from "next/link"
 import useDateTimeFormat from "hooks/useDateTimeFormat"
 
-const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
+const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
 
     const timeAgo = useTimeAgo(createdAt)
     const createdAtFormated = useDateTimeFormat(createdAt)
+
+    // sacar el uid para pasarselo como parametro al link
 
     const router = useRouter()
 
@@ -15,14 +17,20 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
         e.preventDefault()
         router.push(`/status/${id}`)
     }
+
+    const handleClickProfile = (e) => {
+        e.preventDefault()
+        router.push(`/userprofile/${uid}`) //este uid que pasamos como parametro es el sacaremos de la data de cada docuemneto
+        
+    }
     
     return (
         <>
-        <article onClick={handleClick}>
+        <article>
             <Avatar src={avatar} alt={userName} />
             <div>
                 <header>
-                    <h5>{userName}</h5>
+                    <h5 onClick={handleClickProfile}>{userName}</h5>
                     <span></span>
                     <Link href={`/status/${id}`}>
                         <a>
@@ -30,7 +38,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id}) => {
                         </a>
                     </Link>
                 </header>
-                <p>{content}</p>
+                <p onClick={handleClick}>{content}</p>
                 {img && <img src={img}/>}
             </div>
         </article>

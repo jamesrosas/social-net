@@ -1,29 +1,87 @@
 import Devit from "components/Devit"
-import { firestore } from "firebase/admin"
+// import { firestore } from "firebase/admin"
 import { useRouter } from "next/router"
 import BackNav from "components/BackNav"
+import { useState, useEffect } from "react"
+import { getNettComments } from "firebase/client"
+import useUser from "hooks/useUser"
+import Comment from "components/Comment"
+import AddComment from "components/AddComment"
 
 
 const NettPage = (props) => {
+
+    const [listComments, setListComments] = useState([])
+
+    console.log(listComments)
+
+    const user = useUser()
 
     const router = useRouter()
     if(router.isFallback) return "loading...."  
     // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
     // console.log(props)
 
+    // despues de crear un comentario , atraves de un useEffect se ejecutara la funcion para traer los docs de la subcoleccion "comments" lo cual guardaremos en un useState para despues mapearlo en el jsx
+    useEffect(() => {
+        let unsubscribe
+        if (user) {
+            unsubscribe = getNettComments( props.id,  newComments => {
+                setListComments(newComments)
+            })
+        }
+
+        return () => unsubscribe && unsubscribe()
+        
+    }, [user])
+
+    console.log("este es el id del nett, el mismo de la url")
+    console.log(props.id)
+
     return (
-        <>
-            <div>
+        <>  
+            <header>
                 <BackNav href="/home" />
-                {/* <p>{props.userName}</p> */}
-                <Devit {...props}/>
-            </div>
+            </header>
+            <section className="nett-view_container">
+                <Devit {...props} uid={props.userId}/>
+                <span>Comments: {listComments.length}</span>
+                {listComments.map((nettComment) => {
+                    return (
+                        <Comment key={nettComment.id} userName={nettComment.userName} avatar={nettComment.avatar} content={nettComment.content}  createdAt={nettComment.createdAt} uid={nettComment.userId}/>
+                    )
+                })} 
+            </section>
+            <AddComment idNett={props.id}/>
+
             <style jsx>{`
-                div {
+
+                header {
+                    width: 100%;
+                }
+                .nett-view_container {
                     width: 100%;
                     height: 100vh;
                     font-family: 'Poppins', sans-serif;
+                    position: relative;
+                    overflow: auto;
                 }
+                .nett-view_container::-webkit-scrollbar{
+                    width: 5px;
+                    background-color: #ffffff;
+                }
+                .nett-view_container::-webkit-scrollbar-thumb{
+                    background: rgb(0 0 0 / 30%);
+                    border-radius: 20%;
+                }
+
+                span {
+                    background: grey;
+                    border-radius: 8px;
+                    padding: 5px;
+                    font-size: 1.5rem;
+                }
+
             `}</style>
         </>
     )
@@ -31,70 +89,70 @@ const NettPage = (props) => {
 
 // ******** with getStaticProps ************************************************
 
-export async function getStaticPaths () {
+// export async function getStaticPaths () {
 
-    return {
-        paths: [{ params: { id : 'sOog4Gm4g64m3JwxaOsh' } }],
-        fallback: true
-    }
-}
+//     return {
+//         paths: [{ params: { id : 'sOog4Gm4g64m3JwxaOsh' } }],
+//         fallback: true
+//     }
+// }
 
-export async function getStaticProps (context) {
-    const { params } = context
-    const { id } = params
+// export async function getStaticProps (context) {
+//     const { params } = context
+//     const { id } = params
 
-    return firestore
-        .collection('netters')
-        .doc(id)
-        .get()
-        .then( doc => {
-            const data = doc.data()
-            const id = doc.id
-            const {createdAt} = data
-            // const {createdAt, userName, avatar, content} = data
+//     return firestore
+//         .collection('netters')
+//         .doc(id)
+//         .get()
+//         .then( doc => {
+//             const data = doc.data()
+//             const id = doc.id
+//             const {createdAt} = data
+//             // const {createdAt, userName, avatar, content} = data
 
-            // const props = {
-            //     userName,
-            //     avatar,
-            //     content,
-            //     id,
-            //     createdAt: +createdAt.toDate()
-            // }
+//             // const props = {
+//             //     userName,
+//             //     avatar,
+//             //     content,
+//             //     id,
+//             //     createdAt: +createdAt.toDate()
+//             // }
 
-            console.log(data)
-            console.log(doc)
-            console.log(data.userId)
+//             console.log(data)
+//             console.log(doc)
+//             console.log(data.userId)
 
-            const props = {
-                ...data,
-                id,
-                createdAt: +createdAt.toDate()
-            }
+//             const props = {
+//                 ...data,
+//                 id,
+//                 createdAt: +createdAt.toDate()
+//             }
                 
-            return { props }
+//             return { props }
 
-        })
-        .catch(() => {
-            return { props: {} }
-        })
+//         })
+//         .catch(() => {
+//             return { props: {} }
+//         })
     
-}
+// }
 
 // ******** with gerServerSideProps **********************************************
 
-// export async function getServerSideProps (context) {
-//     const { params, res } = context
-//     const { id } = params
+export async function getServerSideProps (context) {
+    const { params, res } = context
+    const { id } = params
 
-//     const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`)
-//     if (apiResponse.ok) {
-//         const props = await apiResponse.json()
-//         return { props } 
-//     } 
-//     if (res) {
-//         res.writeHead(301, { Location: "/home" }).end()
-//     }
-// }
+    const apiResponse = await fetch(`http://localhost:3000/api/devits/${id}`)
+    if (apiResponse.ok) {
+        const props = await apiResponse.json()
+        return { props } 
+    } 
+    if (res) {
+        res.writeHead(301, { Location: "/home" }).end()
+    }
+}
 
 // en getServerSideProps params hace las veces de lo que hace query en getIntialProps
 

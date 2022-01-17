@@ -1,14 +1,24 @@
 
-const Avatar = ({ src, alt, email }) => {
+const Avatar = ({ src, alt, onClick, width, height}) => {
 
     return (
-        <>
-            <img src={src} alt={alt} width={50} height={50}/>
-            <p>{email}</p>
+        <>  
+            <picture onClick={onClick}>
+                <img src={src} alt={alt} />
+            </picture>
             <style jsx>{`
+                picture{
+                    width: fit-content;
+                    height: fit-content;
+                    cursor: pointer;
+                    margin-right: 1rem;
+                }
+
                 img {
                     width: 50px;
                     height: 50px;
+                    width: ${width};
+                    height: ${height};
                     border-radius: 50%;
                     object-fit: cover;
                 }    

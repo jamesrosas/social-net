@@ -110,7 +110,7 @@ const ComposeTweet = () => {
                 </div>
             )}
             <form onSubmit={handleSubmit}>
-                <textarea onChange={handleChange} 
+                <textarea maxlength="200"onChange={handleChange} 
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}

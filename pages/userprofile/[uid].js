@@ -17,16 +17,19 @@ const UserProfilePage = (props) => {
         <>
             <BackNav href="/home" />
             <section>
-                <img src={imgAvatar} width={100} height={100}></img>
-                <h3>{nameUser}</h3>
-                <div className="container">
+                <div className="list-netts_container">
+                    <div className="avatar-section">
+                        <img className="avatar-profile" src={imgAvatar} ></img>
+                        <h3>{nameUser}</h3>
+                    </div>
                     {props.mapeo.map( post => {
                         return (
                             <>
                                 <Devit key={post.id} id={post.id} userName={post.userName} avatar={post.avatar} content={post.content}  createdAt={post.createdAt} img={post.img} uid={post.userId}/>
                             </>
-                            )
+                        )
                     })}
+                    
                 </div>
             </section>
             <style jsx>{`
@@ -36,14 +39,43 @@ const UserProfilePage = (props) => {
                     overflow: clip;
                 }
 
-                article {
-                    border: 1px solid red;
+                .avatar-section {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 200PX;
                 }
 
-                .container {
-                    width: 100%;
-                    height: 80%;
+                h3 {
+                    font-size: 18px;
+                    font-family: 'Poppins', sans-serif;
+                    margin-top: 1rem;
+                }
+
+                .avatar-profile {
+                    margin: 0 auto;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    width: 100px;
+                    height: 100px;
+                }
+
+                .list-netts_container {
+                    grid-area: list;
+                    border: 1px solid red;
                     overflow: auto;
+                    width: 100%;
+                    height: 100%;
+                }
+                .list-netts_container::-webkit-scrollbar{
+                    width: 5px;
+                    background-color: #ffffff;
+                }
+                .list-netts_container::-webkit-scrollbar-thumb{
+                    background: rgb(0 0 0 / 30%);
+                    border-radius: 20%;
                 }
             `}</style>
         </>

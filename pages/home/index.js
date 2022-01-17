@@ -56,7 +56,7 @@ const Timeline = () => {
                         <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content}  createdAt={devit.createdAt} img={devit.img} uid={devit.userId}/>
                     )
                 })}
-                {timeline.length === 0 && (
+                {!timeline.length && (
                     <div className="home-loader_container">
                         <Loader/>
                     </div>

@@ -38,9 +38,10 @@ const Layout = ({children}) => {
                 box-shadow: 2px 2px 6px rgba(128, 128, 128, 0.733);
                 position: relative;
             } 
-            @media (min-width: 500px){
+            @media (max-width: 500px){
                 main {
-                    height: fit-content;
+                    height: 100vh;
+                    max-height: 100vh;
                 }
             }
 

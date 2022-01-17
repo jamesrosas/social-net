@@ -7,17 +7,27 @@ import Swal from "sweetalert2"
 import { faCamera } from "@fortawesome/free-solid-svg-icons"
 import Devit from "components/Devit"
 import Loader from "components/Loader"
-import { getAllUserPosts, listenLatestDevits } from "firebase/client"
+import { getAllUserPosts } from "firebase/client"
+import ProfileModal from "components/ProfileModal"
+import Button from "components/Button"
+import Camera from "components/Icons/Camera"
+import Pencil from "components/Icons/Pencil"
+import Check from "components/Icons/Check"
+import Close from "components/Icons/Close"
 
 const Profile = () => {
 
     const user = useUser()
 
     const [userTimeline , setUserTimeline] = useState([])
+    const [modalProfile, setModalProfile] = useState(false)
+    const [editName, setEditName] = useState(false)
     const [newName, setNewName] = useState("")
+    const [laodAvatar, setLoadAvatar] = useState(false)
     const [imageInput, setImageInput] = useState("")
     const [imageUrlStorage, setImageUrlStorage] = useState("")
     const [task, setTask] = useState(null)
+    
 
     const [inputFileValue, setInputFileValue] = useState(null)
 
@@ -37,6 +47,7 @@ const Profile = () => {
         if (task) {
           const onProgress = () => {
               console.log('cargando imagen...')
+              setLoadAvatar(true)
           }
           const onError = () => {}
           const onComplete = () => {
@@ -44,6 +55,7 @@ const Profile = () => {
             task.snapshot.ref.getDownloadURL()
                 .then((url) => {
                     setImageUrlStorage(url)
+                    setLoadAvatar(false)
                     console.log(url)
                 })
                 .then(() => {
@@ -56,14 +68,18 @@ const Profile = () => {
       }, [task])
     // con este useEffect ya logre obtener la url de la imagen subida y asi mostrarla , por ende puedo hacer uso de esta url para usarla como url de imagen en el metodo de updateProfile() de firebase, y asi actulizar la imagen de avatar del usuario.
 
-
+    const handleClickEditName = () => {
+        setEditName(!editName)
+        setNewName(null)
+        setModalProfile(false)
+    }
     const handleChangeUserName = (e) => {
         setNewName(e.target.value)
     }
 
     const handleSubmitUserName = (e) => {
         e.preventDefault()
-        updateUserProfile({name: newName}, () => Swal.fire("actualización completada") )
+        updateUserProfile({name: newName}, () => setEditName(false))
         console.log("nombre actualizado")
     }
 
@@ -94,116 +110,399 @@ const Profile = () => {
 
 
     // APARENTEMENTE YA ESTA FUNCIONANDO LA ACTUALIZACION DEL AVATAR, LA VECEZ QUE NO SE ACTULIZABA LA IMAGEN SE PUEDE DEBER A QUE FIREBASE SE ESTA DEMORANDO EN EJECUTAR DICHO PROCESO;
-    const actualizarImg = () => {
+    const handleClickUpdateImg = () => {
         updateUserProfile({avatarUrl: imageUrlStorage}, () => Swal.fire("actualización completada") )
         console.log("ejecutando actualizacion de avatar")
         console.log(user)
     }
 
+    const handleClickCancel = () => {
+        setImageUrlStorage(null)
+        setInputFileValue(null)
+        setImageInput(null)
+    }
+
 // para listar todos los netters que ha publicado;
 // traer la coleccion y filtrarla con el metodo where("userId", "==", user.uid) de firebase
+
+    const handleClickModalProfile = () => {
+        setModalProfile(!modalProfile)
+        setNewName(user ? user.username : "")
+        setEditName(false)
+    }
+
 
     return (
         <>
             <BackNav href="/" />
             <section>
-                {user && (
-                    <>
-                        <div className="avatar-container">
-                            <img className="avatar-img" src={imageUrlStorage ? imageUrlStorage : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
-                            <span  className="icon-container">
-                                <FontAwesomeIcon icon={faCamera} size="xs" />
-                            </span>
-                        </div>
-                        <p className="userName">{newName ? newName :user.username}</p>         
-                    </>
-                )}
-                <form onSubmit={handleSubmitUserName}>
-                    <p>update username</p>
-                    <input value={newName} onChange={handleChangeUserName}></input>
-                    <button>update</button>
-                </form>
-                <form onSubmit={handleSubmitInputFile}>
-                    <input type="file" onChange={handleChangeInputFile}></input>
-                    {imageUrlStorage && (
-                        <img src={imageUrlStorage} width={50} height={50}></img>
+                <div className="avatar-section">
+                    {user && (
+                        <>
+                            <div className="avatar-container">
+                                <img className="avatar-img" src={imageUrlStorage ? imageUrlStorage : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
+                                <span  className="icon-camera_container" onClick={handleClickModalProfile} >
+                                    <Camera width="2.2rem" height="2.2rem"/>
+                                </span>
+                            </div>
+                            <div className="update-name_container">
+                                <p className="userName">{newName ? newName : user.username}</p>
+                                <span className="icon-pencil_container" onClick={handleClickEditName}>
+                                    <Pencil width="1.3rem" height="1.3rem"/>
+                                </span>
+                                {editName && (
+                                    <div className="update-name_input">
+                                        <form onSubmit={handleSubmitUserName}>
+                                            <input maxLength="15" value={newName} onChange={handleChangeUserName} placeholder={user.username}></input>
+                                            <div className="btn-container">
+                                                <button type="submit">
+                                                    <Check width="3.5rem" height="3.5rem"/>
+                                                </button>
+                                                <button type="text" onClick={handleClickEditName}>
+                                                    <Close width="3.5rem" height="3.5rem"/>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                )}        
+                            </div>
+                        </>
                     )}
-                    <button>subir imgInput</button>
-                </form>
-                {imageUrlStorage && (    
-                        <button onClick={actualizarImg}>update img</button>
-                )}
-                {inputFileValue && (
-                    <img className="img-preview" src={inputFileValue} width={200} height={200} />
-                )}
-                <h3>Tus Netts</h3>
-                <article>
-                    {userTimeline.map( posts => {
-                        return (
-                            <Devit key={posts.id} id={posts.id} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img}/>
-                        )
-                    })}
-                    {userTimeline.lenght === 0 && (
-                        <Loader/>
-                    )} 
-                </article>
+                </div>
+                <div className="posts-section">
+                    <div className="tab-container">
+                        <h3>Tus Netts</h3>
+                    </div>
+                    <article className="user-timeline">
+                        {userTimeline.map( posts => {
+                            return (
+                                <Devit key={posts.id} id={posts.id} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img} uid={posts.userId}/>
+                            )
+                        })}
+                        {!userTimeline.length && (
+                            <div className="loader-user_container">
+                                <Loader/>
+                            </div>
+                        )} 
+                    </article>
+                    <ProfileModal modalClass={modalProfile ? 'modal modalOn' : 'modal'} onClick={handleClickModalProfile}>
+                        <p className="message-avatar">Escoje una imagen como tu avatar</p>
+                        <form onSubmit={handleSubmitInputFile}>
+                            <div className="input-file_container">
+                                <p className="input-message">seleccionar imagen</p>                 
+                                <input className ="input-file" type="file" onChange={handleChangeInputFile}></input> 
+                            </div>
+                            {inputFileValue && (
+                                <div className="avatar-preview_container">
+                                    <img className="img-preview" src={inputFileValue} />
+                                    {imageInput && (
+                                        <Button>subir imagen</Button>
+                                    )}
+                                </div>
+                            )}
+                            
+                        </form>
+                        {laodAvatar && (
+                            <div className="avatar-loader_container">
+                                <p className="loading-p">cargando imagen...</p>
+                                <Loader/>
+                            </div>
+                        )}
+                        {imageUrlStorage && (
+                            <div className="avatar-loader_container">
+                                <div className="image-container">
+                                    <img className="image-uploaded" src={imageUrlStorage}></img>
+                                </div>
+                                <div className="upload-buttons_container">
+                                    <Button onClick={handleClickUpdateImg}>update img</Button>
+                                    <Button invertColor={true} onClick={handleClickCancel}>cancel</Button>
+                                </div>
+                            </div>
+                        )}
+                    </ProfileModal>
+                </div>
             </section>
 
             <style jsx>{`
                 section {
                     height: 100%;
+                    width: 100%;
+                    position: relative;
                     overflow: clip;
+                    display: grid;
+                    grid-template: 35% 65% / 100%;
+                    grid-template-areas: "avatar"
+                                         "posts";
+                }
+
+                .avatar-section {
+                    grid-area: avatar;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .posts-section {
+                    grid-area: posts;
+                    border: 1px solid blue;
+                    position: relative;
+                    padding-bottom: 2rem;
+                    width: 100%;
+                }
+                .tab-container {
+                    width: 100%;
+                    height: fit-content;
+                    border-bottom: 1px solid grey;
+                }
+                h3 {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.6rem;
+                    margin-left: .5rem;
+                    border-top: 1.5px solid grey;
+                    border-left: 1.5px solid grey;
+                    border-right: 1.5px solid grey;
+                    border-radius: 8px 8px 0 0;
+                    width: fit-content;
+                    padding: 0 5px;
+                    font-weight: 500;
                 }
 
                 .avatar-container {
                     position: relative;
                     width: fit-content;
                     border: 1px solid red;
-                    margin: 2rem auto;
+                    margin: 1rem auto 0 auto;
                 }
 
                 .avatar-img{
                     border-radius: 50%;
                     object-fit: cover;
                     border: 1px solid grey;
+                    width: 150px;
+                    height: 150px;
                 }
 
-                .icon-container{
+                .icon-camera_container{
                     position: absolute;
                     bottom: 0;
                     right: 0;
-                    background: grey;
+                    background: white;
                     border-radius: 50%;
-                    width: 50px;
+                    width: 45px;
+                    height: 45px;
+                    border: 1px solid grey;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    transition: 350ms;
+                }
+                .icon-pencil_container{
+                    background: white;
+                    border-radius: 50%;
+                    padding: 5px;
+                    border: 1px solid grey;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    cursor: pointer;
+                    transition: 350ms;
+                }
+                .icon-camera_container:active , .icon-pencil_container:active {
+                    transform: scale(0.8);
+                    filter: invert(1);
+                }
+
+                .update-name_container {
+                    width: 100%;
                     height: 50px;
                     border: 1px solid red;
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    cursor: pointer;
+                    position: relative;
                 }
 
                 .userName{
                     width: fit-content;
-                    margin: 0 auto;
+                    margin: 0 1rem 0 3rem;
                     font-family: 'Poppins', sans-serif;
                     font-size: 2rem;
+                    font-weight: 600;
                 }
 
-                form {
+                .update-name_input {
                     padding: 5px;
                     border: 1px solid red;
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: white;
+                }
+                .update-name_input form input {
+                    font-family: 'Poppins', sans-serif;
+                    outline: none;
+                    border: none;
+                    font-size: 2rem;
+                    text-align: center;
+                    width: 200px;
+                    border-bottom: 1px black solid;
+                }
+                .update-name_input form .btn-container{         
+                    border: none;
+                    background: none;
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: fit-content;
+                    height: fit-content;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                } 
+                
+                .update-name_input form button {
+                    border: none;
+                    background: none;
+                }
+                .update-name_input form button:nth-child(2) {
+                    border: none;
+                    background: none;
+                    margin: 0 1rem;
                 }
 
-                .img-preview {
-                    object-fit: cover;
-                    margin: 0 auto;
+                .message-avatar {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.7rem;
+                    margin-bottom: 4rem;
                 }
 
-                article {
+                .loader-user_container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                .user-timeline {
                     width: 100%;
                     overflow: auto;
-                    height: 45%;
+                    height: 100%;
+                    width: 100%;
+                }
+                .user-timeline::-webkit-scrollbar{
+                    width: 5px;
+                    background-color: #ffffff;
+                }
+                .user-timeline::-webkit-scrollbar-thumb{
+                    background: rgb(0 0 0 / 30%);
+                    border-radius: 20%;
+                }
+
+                .input-file_container {
+                    width: 200px;
+                    height: 60px;
+                    background: white;
+                    border: 2px solid black;
+                    border-radius: 8px;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 16px;
+                    /* padding: 1rem; */
+                    position: relative;
+                    cursor: pointer;
+                }
+                .input-file_container:active{
+                    filter: invert(1);
+                }
+                .input-message {
+                    position: absolute;
+                    left: 16px;
+                    top: 16px;
+                }
+                input[type="file"]{
+                    opacity: 0;
+                    height: 61px;
+                    width: 100%;
+                    cursor: pointer;
+                    padding: 2rem;
+                    positon: absolute;
+                    z-index: 10;
+                }
+
+                .avatar-preview_container {
+                    background: white;
+                    position: absolute;
+                    display: flex;
+                    flex-direction: column;
+                    left: 0;
+                    bottom: 0;
+                    width: 100%;
+                    height: 90%;
+                    padding: 1rem;
+                }
+                .img-preview {
+                    object-fit: contain;
+                    width: 90%;
+                    height: 80%;
+                    margin: 0 auto;
+                    border-radius: 8px;
+                }
+
+                .loading-p {
+                    font-size: 18px;
+                    font-family: 'Poppins', sans-serif;
+                }
+
+                .avatar-loader_container {
+                    background: white;
+                    width: 100%;
+                    height: 90%;
+                    padding: 1rem;
+                    overflow: clip;
+                    margin: 0 auto;
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .image-container {
+                    width: 90%;
+                    height: 80%;
+                    object-fit: cover;
+                    border-radius: 8px;
+                    overflow: clip;
+                }
+
+                .image-uploaded {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+
+                .upload-buttons_container {
+                    display: flex;
+                    align-items: space-evenly;
+                    width: 90%;
+                }
+
+                @media (min-height: 800px){
+                    section {
+                    height: 100%;
+                    position: relative;
+                    overflow: clip;
+                    display: grid;
+                    grid-template: 28% 72% / 100%;
+                    grid-template-areas: "avatar"
+                                         "posts";
+                }
                 }
 
             `}</style>

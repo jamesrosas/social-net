@@ -132,12 +132,29 @@ export const addNett = ({avatar, content, userId, userName, img}) => {
     })
 }
 
-// con esta funcion quiero guardar en una nueva coleccion llamada "biographies" lo que cada usuario quiera colocar en  su seccion de bigrafia de su perfil
+// con esta funcion quiero guardar en una nueva coleccion llamada "biographies" lo que cada usuario quiera colocar en  su seccion de bigrafia de su perfil. Lo que podria hacer es un hook que haga el fetch de esta biografia y usando esto filtrarlo por el uid que ya poseeria la cloeccion, y asi traer el contenido correspondiente;
 export const addBiography = ({ content, userId }) => {
     return db.collection('biographies').add({
         content,
         userId
     })
+}
+
+export const addComment = ({ content }, nettId) => {
+
+    const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection('netters')
+        .doc(nettId)
+        .collection('comments')
+        .add({
+            avatar: currentUser.photoURL,
+            content,
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        })
 }
 
 const mapDevitFromFirebaseToDevitObject = (doc) => {
@@ -187,6 +204,18 @@ export const getUserProfile = (uid , callback) => {
         })
 }
 
+export const getNettComments = (nettId, callback) => {
+    return db
+        .collection('netters')
+        .doc(nettId)
+        .collection("comments")
+        .orderBy('createdAt', 'asc')
+        .onSnapshot( ({docs}) => {
+            const newComments = docs.map( doc => mapDevitFromFirebaseToDevitObject(doc))
+            callback(newComments)
+        })
+}
+
 export const fetchLatestNetts = () => {
     return db.collection('netters')
         .orderBy('createdAt', 'desc')
@@ -228,5 +257,17 @@ export const updateUserProfile = ({name, avatarUrl}, callback) => {
             transaction.update(doc.ref,{avatar: ifAvatarUrl, userName: ifUserName})
         })
     }).then(callback)
+
+}
+
+export const getCurrentUser = (callback) => {
+    const currentUser = firebase.auth().currentUser
+
+    const data = {
+        avatar: currentUser.photoURL,
+        userName: currentUser.displayName
+    }
+
+    callback(data)
 
 }

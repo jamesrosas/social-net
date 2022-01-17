@@ -7,6 +7,7 @@ export default (request, response) => {
     firestore
         .collection('netters')
         .where("userId", "==", uid)
+        .orderBy('createdAt', 'desc')
         .onSnapshot( ({docs}) => {
             // docs.map( doc => {
             //     const data = doc.data()

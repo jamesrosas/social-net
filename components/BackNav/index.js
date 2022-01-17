@@ -21,6 +21,8 @@ const BackNav = ({ href }) => {
                     padding: 1rem;
                     display: flex;
                     align-items: center;
+                    position: sticky;
+                    top: 0;
                 }
 
                 div {

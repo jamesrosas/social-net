@@ -265,9 +265,174 @@ export const getCurrentUser = (callback) => {
 
     const data = {
         avatar: currentUser.photoURL,
-        userName: currentUser.displayName
+        userName: currentUser.displayName,
+        userId: currentUser.uid
     }
 
     callback(data)
+
+}
+
+export const addFavs = ({ avatar, content, img, currentUserId,nettUserId, userName, createdAt, originalNettId}) => {
+
+    return db
+        .collection('favorites')
+        .doc(`${originalNettId}${currentUserId}`)
+        .set({
+            avatar,
+            content,
+            img,
+            currentUserId,
+            nettUserId,
+            userName,
+            createdAt,
+            originalNettId: originalNettId
+        })
+
+        // quiero guardar en esta coleccion un doc al cual le de fav , para ello entonces copiaria toda la data del doc en cuestion , la cual tendria que recibir como parametro para poder adicionarla. tambien tengo que agregar la logica par cuando la estrella de fav este en amarrilo esta se agrege a la coleccion , pero si esta pagada pues se elimine de la coleccion
+}
+
+export const deleteFavs = (nettFavId) => {
+    return db   
+        .collection("favorites")
+        .doc(nettFavId)
+        .delete()
+}
+
+export const getUserFavsNetts = (callback) => {
+
+    const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection("favorites")
+        .where("currentUserId", "==", currentUser.uid)
+        .orderBy('createdAt', 'desc')
+        .onSnapshot( ({docs}) => {
+            const favsNetts = docs.map( doc => {
+                const data = doc.data()
+                const id = doc.id     
+                
+                return {
+                    ...data,
+                    id
+                }
+            })
+            callback(favsNetts)
+        })
+}
+
+export const getUserFavsDocId = (id ,callback) => {
+
+    // const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection("favorites")
+        .where("originalNettId", "==", id)
+        .onSnapshot( ({docs}) => {
+            const favsNetts = docs.map( doc => {
+                const data = doc.data()
+                const id = doc.id     
+                
+                return {
+                    ...data,
+                    id
+                }
+            })
+            callback(favsNetts)
+        })
+}
+
+// ++++++++++++++++ test prueba para el state del favIcon
+
+export const addStateFavIcon = ({ fav }, nettId, favIconId) => {
+
+    const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection('netters')
+        .doc(nettId)
+        .collection('favs')
+        .doc(favIconId)
+        .set({
+            fav,
+            userId: currentUser.uid     
+        })
+}
+
+export const deleteFavIcon = (nettId, favIconId) => {
+    return db   
+        .collection('netters')
+        .doc(nettId)
+        .collection('favs')
+        // .where("userId", "==", currentUser.uid) deberia colocar este filtro para eliminar solo los favs qeu coincidan con el currentUser ??
+        .doc(favIconId)
+        .delete()
+}
+
+
+export const getStateFavIcon = (nettId, callback) => {
+
+    const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection('netters')
+        .doc(nettId)
+        .collection("favs")
+        .where("userId", "==", currentUser.uid)
+        .onSnapshot( ({docs}) => {
+            const stateIcon = docs.map( doc => {
+                const data = doc.data()
+                const id = doc.id     
+                
+                return {
+                    ...data,
+                    id
+                }
+            })
+            callback(stateIcon)
+        })
+}
+
+// ++++++++++++++++++++ prueba de consultas para traer Netts originales basados de la coleccion favoritos********
+
+export const getOriginalNettFromFavs = (originalNettId, callback) => {
+
+    return db
+            .collection("netters")
+            .doc(originalNettId)
+            .onSnapshot( doc => {
+
+                const array = [doc]
+
+                const mapFavNett = array.map( doc => {
+                    const data = doc.data()
+                    const id = doc.id
+
+                    return {
+                        ...data,
+                        id
+                    }
+                })
+                
+                console.log("esta Es la dataNett", doc.data(), "y el ID", doc.id, "y el array", array, "y el mapFavNet", mapFavNett)
+                
+                callback(mapFavNett)
+
+            })
+            // .get()
+            // .then((doc) => {
+
+
+
+            //     const data = doc.data()
+
+            //     const favNett = {
+            //         ...data
+            //     }
+
+            //     callback(data)
+            //     console.log("esta si es la dataNett", doc.data(), "y el ID", doc.id, "y el objeto favNett", favNett)
+                 
+            // })
 
 }

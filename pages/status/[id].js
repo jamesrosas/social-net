@@ -45,12 +45,16 @@ const NettPage = (props) => {
             </header>
             <section className="nett-view_container">
                 <Devit {...props} uid={props.userId}/>
-                <span>Comments: {listComments.length}</span>
-                {listComments.map((nettComment) => {
-                    return (
-                        <Comment key={nettComment.id} userName={nettComment.userName} avatar={nettComment.avatar} content={nettComment.content}  createdAt={nettComment.createdAt} uid={nettComment.userId}/>
-                    )
-                })} 
+                <div>
+                    <span>
+                        Comments: {listComments.length}  
+                    </span>
+                    {listComments.map((nettComment) => {
+                        return (
+                            <Comment key={nettComment.id} userName={nettComment.userName} avatar={nettComment.avatar} content={nettComment.content}  createdAt={nettComment.createdAt} uid={nettComment.userId}/>
+                        )
+                    })} 
+                </div>
             </section>
             <AddComment idNett={props.id}/>
 
@@ -75,12 +79,23 @@ const NettPage = (props) => {
                     border-radius: 20%;
                 }
 
+                div {
+                    width: 100%;
+                    padding-top: 4.5rem;
+                    position: relative;
+                }
+
                 span {
-                    background: grey;
+                    background: #00c4ff40;
                     border-radius: 8px;
                     padding: 5px;
                     font-size: 1.5rem;
+                    position: absolute;
+                    top: 1rem;
+                    left: 1rem;
+           
                 }
+               
 
             `}</style>
         </>

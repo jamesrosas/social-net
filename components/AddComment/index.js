@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import {addComment , getCurrentUser } from "firebase/client"
 import useUser from "hooks/useUser"
 import Avatar from "components/Avatar"
+import Send from "components/Icons/Send"
 
 
 const AddComment = ({idNett}) => {
@@ -44,7 +45,9 @@ const AddComment = ({idNett}) => {
                 <Avatar src={commentUser.avatar} alt={commentUser.userName}  width="3.5rem" height="3.5rem"/>
                 <textarea onChange={handleChangeComment} value={comment} placeholder="Agrega un comentario" autoFocus>
                 </textarea>
-                <button>enviar</button>
+                <button>
+                    <Send width="4rem" height="4rem"/>
+                </button>
             </form>
 
             <style jsx>{`
@@ -65,7 +68,7 @@ const AddComment = ({idNett}) => {
                 textarea {
                     font-family: 'Poppins', sans-serif;
                     outline: none;
-                    width: 75%;
+                    width: 71%;
                     font-size: 1.7rem;
                     border-radius: 8px;
                     border: 1px solid grey;
@@ -82,6 +85,13 @@ const AddComment = ({idNett}) => {
                 textarea::-webkit-scrollbar-thumb{
                     background: rgb(0 0 0 / 30%);
                     border-radius: 20%;
+                }
+
+                button {
+                    border: none;
+                    background: none;
+                    width: fit-content;
+                    height: fit-content;
                 }
 
 

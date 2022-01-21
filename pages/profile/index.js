@@ -1,10 +1,8 @@
 import BackNav from "components/BackNav"
-import { updateUserProfile, uploadImage } from "firebase/client"
+import { getOriginalNettFromFavs, updateUserProfile, uploadImage } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useState, useEffect } from "react"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Swal from "sweetalert2"
-import { faCamera } from "@fortawesome/free-solid-svg-icons"
 import Devit from "components/Devit"
 import Loader from "components/Loader"
 import { getAllUserPosts } from "firebase/client"
@@ -14,10 +12,32 @@ import Camera from "components/Icons/Camera"
 import Pencil from "components/Icons/Pencil"
 import Check from "components/Icons/Check"
 import Close from "components/Icons/Close"
+import useFavsNetts from "hooks/useFavsNetts"
 
 const Profile = () => {
 
     const user = useUser()
+    const favsUserTimeline = useFavsNetts()
+
+    // const [originalNett, setOriginalNett] = useState([])
+
+    // useEffect(() => {
+    //     if(favsUserTimeline.length){
+    //         favsUserTimeline.forEach( doc => {
+    //             getOriginalNettFromFavs(doc.originalNettId, favNett => {
+    //                 setOriginalNett(favNett)
+    //             })
+    //         })
+    //     }
+    // },[favsUserTimeline])
+
+    // console.log("ESTE ES EL CONTENIDO DEL ORIGINAL NETT")
+    // if(originalNett.length){
+    //     console.log(originalNett)
+    // } else { console.log("no llego nada para originalNett")}
+
+    // console.log("este es el contenido del favDoc")
+    // console.log(favsUserTimeline)
 
     const [userTimeline , setUserTimeline] = useState([])
     const [modalProfile, setModalProfile] = useState(false)
@@ -26,9 +46,9 @@ const Profile = () => {
     const [laodAvatar, setLoadAvatar] = useState(false)
     const [imageInput, setImageInput] = useState("")
     const [imageUrlStorage, setImageUrlStorage] = useState("")
+    const [completeImgAvatar, setCompleteImgAvatar] = useState("")
     const [task, setTask] = useState(null)
-    
-
+    const [showFavs, setShowFavs] = useState(false)    
     const [inputFileValue, setInputFileValue] = useState(null)
 
     useEffect(() => {
@@ -42,6 +62,7 @@ const Profile = () => {
         return () => unsubscribe && unsubscribe()
         
     }, [user])
+
 
     useEffect(() => {
         if (task) {
@@ -98,7 +119,6 @@ const Profile = () => {
         }
     }
 
-    // esta es la funcion que debe contener el boton ok de sweetalert cuando se muestre la imagen a subir;
     const handleSubmitInputFile = (e) => {
         e.preventDefault()
         const task = uploadImage(imageInput)
@@ -111,15 +131,28 @@ const Profile = () => {
 
     // APARENTEMENTE YA ESTA FUNCIONANDO LA ACTUALIZACION DEL AVATAR, LA VECEZ QUE NO SE ACTULIZABA LA IMAGEN SE PUEDE DEBER A QUE FIREBASE SE ESTA DEMORANDO EN EJECUTAR DICHO PROCESO;
     const handleClickUpdateImg = () => {
-        updateUserProfile({avatarUrl: imageUrlStorage}, () => Swal.fire("actualización completada") )
+        updateUserProfile({avatarUrl: imageUrlStorage}, () => {
+            Swal.fire("actualización completada")
+            setImageUrlStorage(null)
+            setInputFileValue(null)
+            setImageInput(null)
+            setModalProfile(false)
+        })
         console.log("ejecutando actualizacion de avatar")
         console.log(user)
     }
+
+    useEffect(() => {
+        if(imageUrlStorage){
+            setCompleteImgAvatar(imageUrlStorage)
+        }
+    },[imageUrlStorage])
 
     const handleClickCancel = () => {
         setImageUrlStorage(null)
         setInputFileValue(null)
         setImageInput(null)
+        setCompleteImgAvatar(null)
     }
 
 // para listar todos los netters que ha publicado;
@@ -140,7 +173,7 @@ const Profile = () => {
                     {user && (
                         <>
                             <div className="avatar-container">
-                                <img className="avatar-img" src={imageUrlStorage ? imageUrlStorage : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
+                                <img className="avatar-img" src={completeImgAvatar ? completeImgAvatar : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
                                 <span  className="icon-camera_container" onClick={handleClickModalProfile} >
                                     <Camera width="2.2rem" height="2.2rem"/>
                                 </span>
@@ -171,20 +204,44 @@ const Profile = () => {
                 </div>
                 <div className="posts-section">
                     <div className="tab-container">
-                        <h3>Tus Netts</h3>
+                        <p className="tab-section" onClick={() => setShowFavs(false)}>Tus Netts</p>
+                        <p className="tab-section" onClick={() => setShowFavs(true)}>Favs</p>
                     </div>
-                    <article className="user-timeline">
-                        {userTimeline.map( posts => {
-                            return (
-                                <Devit key={posts.id} id={posts.id} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img} uid={posts.userId}/>
-                            )
-                        })}
-                        {!userTimeline.length && (
-                            <div className="loader-user_container">
-                                <Loader/>
-                            </div>
-                        )} 
-                    </article>
+                    {showFavs 
+                        ?
+                        <article className="user-timeline">
+                            {favsUserTimeline.map( posts => {
+                                return (
+                                    <Devit key={posts.id} id={posts.originalNettId} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img} uid={posts.nettUserId}/>
+                                    // cambiar el userId que pasamos al parametro uid por el nettUserId
+                                )
+                            })}
+                            {!favsUserTimeline.length && (
+                                <div className="loader-user_container">
+                                    <Loader/>
+                                </div>
+                            )} 
+                        </article>
+    
+                        :
+                        <article className="user-timeline">
+                            {userTimeline.map( posts => {
+                                return (
+                                    <Devit key={posts.id} id={posts.id} userName={posts.userName} avatar={posts.avatar} content={posts.content}  createdAt={posts.createdAt} img={posts.img} uid={posts.userId}/>
+                                )
+                            })}
+                            {!userTimeline.length && (
+                                <div className="loader-user_container">
+                                    <Loader/>
+                                </div>
+                            )}
+                            {userTimeline.length < 1 && (
+                                <div className="loader-user_container">
+                                    <p>agrega tu primer post</p>
+                                </div>
+                            )}
+                        </article>
+                    }
                     <ProfileModal modalClass={modalProfile ? 'modal modalOn' : 'modal'} onClick={handleClickModalProfile}>
                         <p className="message-avatar">Escoje una imagen como tu avatar</p>
                         <form onSubmit={handleSubmitInputFile}>
@@ -253,8 +310,9 @@ const Profile = () => {
                     width: 100%;
                     height: fit-content;
                     border-bottom: 1px solid grey;
+                    display: flex;
                 }
-                h3 {
+                .tab-section {
                     font-family: 'Poppins', sans-serif;
                     font-size: 1.6rem;
                     margin-left: .5rem;

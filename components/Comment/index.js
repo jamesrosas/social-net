@@ -51,7 +51,7 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
                 font-size: 1.8rem;
             }
             .comment-container {
-                border: 1px solid grey;
+                border: 1px solid #80808073;
                 border-radius: 8px;
                 width: 100%;
                 padding: 1rem;

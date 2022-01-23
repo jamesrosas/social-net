@@ -1,5 +1,5 @@
 import BackNav from "components/BackNav"
-import { getOriginalNettFromFavs, updateUserProfile, uploadImage } from "firebase/client"
+import { updateUserProfile, uploadImage } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useState, useEffect } from "react"
 import Swal from "sweetalert2"
@@ -18,26 +18,6 @@ const Profile = () => {
 
     const user = useUser()
     const favsUserTimeline = useFavsNetts()
-
-    // const [originalNett, setOriginalNett] = useState([])
-
-    // useEffect(() => {
-    //     if(favsUserTimeline.length){
-    //         favsUserTimeline.forEach( doc => {
-    //             getOriginalNettFromFavs(doc.originalNettId, favNett => {
-    //                 setOriginalNett(favNett)
-    //             })
-    //         })
-    //     }
-    // },[favsUserTimeline])
-
-    // console.log("ESTE ES EL CONTENIDO DEL ORIGINAL NETT")
-    // if(originalNett.length){
-    //     console.log(originalNett)
-    // } else { console.log("no llego nada para originalNett")}
-
-    // console.log("este es el contenido del favDoc")
-    // console.log(favsUserTimeline)
 
     const [userTimeline , setUserTimeline] = useState([])
     const [modalProfile, setModalProfile] = useState(false)

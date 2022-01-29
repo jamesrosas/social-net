@@ -1,6 +1,10 @@
 import { useRouter } from "next/router"
 import BackNav from "components/BackNav"
 import Devit from "components/Devit"
+import { useState, useEffect } from "react"
+import { getUserComments } from "firebase/client"
+import useUser from "hooks/useUser"
+import NettImage from "components/NettImage"
 
 
 const UserProfilePage = (props) => {
@@ -8,20 +12,42 @@ const UserProfilePage = (props) => {
     const router = useRouter()
     if(router.isFallback) return "loading...."  
     // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
-    // console.log(props)
+   
+    const user = useUser()
+    const [commentsData, setCommentsData] = useState([])
 
-    const imgAvatar = props.mapeo[0].avatar
-    const nameUser = props.mapeo[0].userName
+    console.log("este es el contenido de commentsData: ", commentsData )
+
+    useEffect(() => {
+        let unsubscribe
+        if (user) {
+            unsubscribe = getUserComments( props.uid,  newComments => {
+                setCommentsData(newComments)
+            })
+        }
+
+        return () => unsubscribe && unsubscribe()
+        
+    }, [user])
 
     return (
         <>
             <BackNav href="/home" />
             <section>
                 <div className="list-netts_container">
-                    <div className="avatar-section">
-                        <img className="avatar-profile" src={imgAvatar} ></img>
-                        <h3>{nameUser}</h3>
-                    </div>
+                    {props.mapeo.length && (
+                        <>
+                            <div className="avatar-section">
+                                <div className="profile-photo_container">
+                                    <NettImage src={props.mapeo[0].avatar} />
+                                </div>
+                                <h3>{props.mapeo[0].userName}</h3>
+                            </div>
+                            <div className="tab-container">
+                                <p className="tab-section">Netts</p>
+                            </div>
+                        </>
+                    )}
                     {props.mapeo.map( post => {
                         return (
                             <>
@@ -29,9 +55,26 @@ const UserProfilePage = (props) => {
                             </>
                         )
                     })}
-                    
+                    {!props.mapeo.length && commentsData.length && (
+                        <>
+                            <div className="avatar-section">
+                                <div className="profile-photo_container">
+                                    <NettImage src={commentsData[0].avatar} />
+                                </div>
+                                <h3>{commentsData[0].userName}</h3>
+                            </div>
+                            <div className="tab-container">
+                                <p className="tab-section">Netts</p>
+                            </div>
+                            <div className="no-netts_container">
+                                <p>{commentsData[0].userName} no ha publicado nada aún :/</p>
+                                <img src="https://i.postimg.cc/s2N6Czyg/nonetts.gif" width={200} />
+                            </div>
+                        </>
+                    )}   
                 </div>
             </section>
+
             <style jsx>{`
                 section {
                     height: 100%;
@@ -61,6 +104,28 @@ const UserProfilePage = (props) => {
                     width: 100px;
                     height: 100px;
                 }
+                .tab-container {
+                    width: 100%;
+                    height: fit-content;
+                    border-bottom: 1.5px solid black;
+                    display: flex;
+                    padding-left: 0.5rem;
+                    margin-bottom: 2.5rem;
+                }
+                .tab-section {
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.6rem;
+                    margin: 0 1rem;
+                    border-top: 1.5px solid black;
+                    border-left: 1.5px solid black;
+                    border-right: 1.5px solid black; 
+                    border-radius: 8px 8px 0 0;
+                    width: fit-content;
+                    padding: 0 5px;
+                    font-weight: 500;
+                    background: white;
+                    transform: scale(1.14);
+                }
 
                 .list-netts_container {
                     grid-area: list;
@@ -77,6 +142,32 @@ const UserProfilePage = (props) => {
                     background: rgb(0 0 0 / 30%);
                     border-radius: 20%;
                 }
+
+                .profile-photo_container{
+                    width: 150px;
+                    height: 150Px;
+                    border-radius: 50%;
+                    overflow: clip;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .no-netts_container {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 1rem;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.6rem;
+                    text-align: center;
+                }
+                .no-netts_container img {
+                    margin-left: 3rem;
+                    margin-top: 2rem;
+                }
+
             `}</style>
         </>
     )

@@ -1,7 +1,9 @@
 import useCurrentUser from "hooks/useCurrentUser"
 import useUser from "hooks/useUser"
 import { useState, useEffect } from "react"
-import { addFavs, addStateFavIcon, deleteFavIcon, deleteFavs, getStateFavIcon, getUserFavsDocId } from "firebase/client"
+import { addFavs, addStateFavIcon, deleteFavIcon, deleteFavs, getStateFavIcon, getUserFavIconId } from "firebase/client"
+import FavoriteOn from "components/Icons/FavoriteOn"
+import Favorite from "components/Icons/Favorite"
 
 
 const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}) => {
@@ -93,7 +95,7 @@ const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}
     useEffect(() => {
         let unsubscribe
         if (user) {
-            unsubscribe = getUserFavsDocId( nettId ,favsNetts => {
+            unsubscribe = getUserFavIconId( nettId ,favsNetts => {
                 setNettFavId(favsNetts)
             })
         }
@@ -102,13 +104,19 @@ const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}
         
     }, [user])
 
-    const showEstrellaIcon = estrellaIcon.length ? "🔥" : "🌚"
+    const showEstrellaIcon = estrellaIcon.length ? <FavoriteOn width="3rem" height="3rem"/> : <Favorite width="3rem" height="3rem"/>
 
     return (
         <>
-            <i onClick={handleClickIconStatus}>
+            <span onClick={handleClickIconStatus}>
                 {favIcon ? showEstrellaIcon : showEstrellaIcon}
-            </i> 
+            </span> 
+
+            <style jsx>{`
+                span {
+                    cursor: pointer;
+                }    
+            `}</style>
         </>
     )
 }

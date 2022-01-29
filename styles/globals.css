@@ -15,7 +15,7 @@ textarea, input {
     outline: none;
 }
 
-.btn-class{
+.btn-class, .btn-cancel{
     font-size: 20px;
     font-family: 'Poppins', sans-serif;
     color: black;
@@ -24,6 +24,12 @@ textarea, input {
     padding: 5px 8px;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0 1rem;
+    font-weight: 500;
+}
+.btn-cancel {
+    background: black;
+    color: white;
 }
 
 .alert-container{
@@ -34,11 +40,35 @@ textarea, input {
     border: 2px solid black !important;
     border-radius: 8px !important;
 }
-
+.popup-toast {
+    border: 2px solid black !important;
+    border-radius: 8px !important;
+    /* width: 230px !important; */
+    width: fit-content !important;
+    padding: 1rem !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1rem !important;
+}
+.icon-toast {
+    width: 2em !important;
+    height: 2em !important;
+}
 .letra-style{
     font-size: 2em !important;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', sans-serif !important;
   }
+.letra-popup{
+    font-size: 1.6em !important;
+    font-family: 'Poppins', sans-serif !important;
+  }
+
+.content-class h2 {
+    font-size: 20px;
+    font-family: 'Poppins' !important;
+}
 
 
 

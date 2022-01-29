@@ -13,6 +13,9 @@ import Pencil from "components/Icons/Pencil"
 import Check from "components/Icons/Check"
 import Close from "components/Icons/Close"
 import useFavsNetts from "hooks/useFavsNetts"
+import Link from "next/link"
+import NettImage from "components/NettImage"
+
 
 const Profile = () => {
 
@@ -80,10 +83,14 @@ const Profile = () => {
 
     const handleSubmitUserName = (e) => {
         e.preventDefault()
-        updateUserProfile({name: newName}, () => setEditName(false))
+        updateUserProfile({name: newName}, () => {
+            Swal.fire("userName Actualizado")
+            setEditName(false)
+        })
         console.log("nombre actualizado")
     }
 
+    // usar este mismo metodo en el boton "foto +" de createNett
     const handleChangeInputFile = (e) => {
         const file = e.target.files[0]
         console.log(e.target)
@@ -112,7 +119,7 @@ const Profile = () => {
     // APARENTEMENTE YA ESTA FUNCIONANDO LA ACTUALIZACION DEL AVATAR, LA VECEZ QUE NO SE ACTULIZABA LA IMAGEN SE PUEDE DEBER A QUE FIREBASE SE ESTA DEMORANDO EN EJECUTAR DICHO PROCESO;
     const handleClickUpdateImg = () => {
         updateUserProfile({avatarUrl: imageUrlStorage}, () => {
-            Swal.fire("actualización completada")
+            Swal.fire("Avatar actualizado")
             setImageUrlStorage(null)
             setInputFileValue(null)
             setImageInput(null)
@@ -153,7 +160,10 @@ const Profile = () => {
                     {user && (
                         <>
                             <div className="avatar-container">
-                                <img className="avatar-img" src={completeImgAvatar ? completeImgAvatar : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/>
+                                <div className="profile-photo_container">
+                                    <NettImage src={completeImgAvatar ? completeImgAvatar : user.avatar} />
+                                </div>
+                                {/* <img className="avatar-img" src={completeImgAvatar ? completeImgAvatar : user.avatar} alt={newName ? newName :user.username} width={180} height={180}/> */}
                                 <span  className="icon-camera_container" onClick={handleClickModalProfile} >
                                     <Camera width="2.2rem" height="2.2rem"/>
                                 </span>
@@ -166,7 +176,7 @@ const Profile = () => {
                                 {editName && (
                                     <div className="update-name_input">
                                         <form onSubmit={handleSubmitUserName}>
-                                            <input maxLength="15" value={newName} onChange={handleChangeUserName} placeholder={user.username}></input>
+                                            <input maxLength="15" value={newName} autoFocus onChange={handleChangeUserName} placeholder={user.username}></input>
                                             <div className="btn-container">
                                                 <button type="submit">
                                                     <Check width="3.5rem" height="3.5rem"/>
@@ -184,8 +194,8 @@ const Profile = () => {
                 </div>
                 <div className="posts-section">
                     <div className="tab-container">
-                        <p className="tab-section" onClick={() => setShowFavs(false)}>Tus Netts</p>
-                        <p className="tab-section" onClick={() => setShowFavs(true)}>Favs</p>
+                        <p className={showFavs ? "tab-section" : "tab-section dark"} onClick={() => setShowFavs(false)}>Tus Netts</p>
+                        <p className={showFavs ? "tab-section dark" : "tab-section"} onClick={() => setShowFavs(true)}>Favs</p>
                     </div>
                     {showFavs 
                         ?
@@ -198,9 +208,9 @@ const Profile = () => {
                             })}
                             {!favsUserTimeline.length && (
                                 <div className="loader-user_container">
-                                    <Loader/>
+                                    <p>no tienes favs todavia</p>
                                 </div>
-                            )} 
+                            )}
                         </article>
     
                         :
@@ -212,12 +222,13 @@ const Profile = () => {
                             })}
                             {!userTimeline.length && (
                                 <div className="loader-user_container">
-                                    <Loader/>
-                                </div>
-                            )}
-                            {userTimeline.length < 1 && (
-                                <div className="loader-user_container">
-                                    <p>agrega tu primer post</p>
+                                    <p>Crea tu primer post  
+                                        <Link href="/compose/tweet">
+                                            <a>
+                                                <p>aqui</p>
+                                            </a>
+                                        </Link>
+                                    </p>
                                 </div>
                             )}
                         </article>
@@ -227,13 +238,23 @@ const Profile = () => {
                         <form onSubmit={handleSubmitInputFile}>
                             <div className="input-file_container">
                                 <p className="input-message">seleccionar imagen</p>                 
-                                <input className ="input-file" type="file" onChange={handleChangeInputFile}></input> 
+                                <input className ="input-file" type="file" onChange={handleChangeInputFile} ></input> 
                             </div>
                             {inputFileValue && (
                                 <div className="avatar-preview_container">
                                     <img className="img-preview" src={inputFileValue} />
                                     {imageInput && (
-                                        <Button>subir imagen</Button>
+                                        <div className="upload-buttons_container">
+                                            <Button type="submit">subir imagen</Button>
+                                            <Button onClick={() => {
+                                                setInputFileValue(null)
+                                            }} invertColor={true}>
+                                                cancel
+                                            </Button>
+                                            {/* <button type="reset">
+                                                reset
+                                            </button> */}
+                                        </div>
                                     )}
                                 </div>
                             )}
@@ -251,8 +272,8 @@ const Profile = () => {
                                     <img className="image-uploaded" src={imageUrlStorage}></img>
                                 </div>
                                 <div className="upload-buttons_container">
-                                    <Button onClick={handleClickUpdateImg}>update img</Button>
-                                    <Button invertColor={true} onClick={handleClickCancel}>cancel</Button>
+                                    <Button onClick={handleClickUpdateImg}>Actualizar</Button>
+                                    <Button invertColor={true} onClick={handleClickCancel}>Cancel</Button>
                                 </div>
                             </div>
                         )}
@@ -279,6 +300,16 @@ const Profile = () => {
                     justify-content: center;
                     align-items: center;
                 }
+                .profile-photo_container{
+                    width: 150px;
+                    height: 150Px;
+                    border-radius: 50%;
+                    overflow: clip;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    
+                }
                 .posts-section {
                     grid-area: posts;
                     border: 1px solid blue;
@@ -289,20 +320,30 @@ const Profile = () => {
                 .tab-container {
                     width: 100%;
                     height: fit-content;
-                    border-bottom: 1px solid grey;
+                    border-bottom: 1.5px solid black;
                     display: flex;
+                    padding-left: 0.5rem;
                 }
                 .tab-section {
                     font-family: 'Poppins', sans-serif;
                     font-size: 1.6rem;
-                    margin-left: .5rem;
-                    border-top: 1.5px solid grey;
-                    border-left: 1.5px solid grey;
-                    border-right: 1.5px solid grey;
+                    margin: 0 1rem;
+                    border-top: 1.5px solid black;
+                    border-left: 1.5px solid black;
+                    border-right: 1.5px solid black; 
                     border-radius: 8px 8px 0 0;
                     width: fit-content;
                     padding: 0 5px;
                     font-weight: 500;
+                    background: #d1cfcf;
+                    transition: 200ms;
+                    opacity: .9;
+                }
+                .dark {
+                    background: white;
+                    color: black;
+                    transform: scale(1.25);
+                    opacity: 1;
                 }
 
                 .avatar-container {
@@ -394,6 +435,7 @@ const Profile = () => {
                     border: none;
                     background: none;
                     position: absolute;
+                    top: 0.05rem;
                     bottom: 0;
                     right: 0;
                     width: fit-content;
@@ -406,6 +448,7 @@ const Profile = () => {
                 .update-name_input form button {
                     border: none;
                     background: none;
+                    cursor: pointer;
                 }
                 .update-name_input form button:nth-child(2) {
                     border: none;
@@ -425,6 +468,14 @@ const Profile = () => {
                     align-items: center;
                     width: 100%;
                     height: 100%;
+                    position: relative;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 1.7rem;
+                }
+
+                .loader-user_container p {
+                    width: fit-content;
+                    margin: 0 auto;
                 }
 
                 .user-timeline {
@@ -432,6 +483,8 @@ const Profile = () => {
                     overflow: auto;
                     height: 100%;
                     width: 100%;
+                    padding: 2rem 0;
+
                 }
                 .user-timeline::-webkit-scrollbar{
                     width: 5px;
@@ -528,7 +581,7 @@ const Profile = () => {
                 .upload-buttons_container {
                     display: flex;
                     align-items: space-evenly;
-                    width: 90%;
+                    width: 100%;
                 }
 
                 @media (min-height: 800px){
@@ -537,7 +590,18 @@ const Profile = () => {
                     position: relative;
                     overflow: clip;
                     display: grid;
-                    grid-template: 28% 72% / 100%;
+                    grid-template: 30% 70% / 100%;
+                    grid-template-areas: "avatar"
+                                         "posts";
+                }
+                }
+                @media (min-width: 500px){
+                    section {
+                    height: 100%;
+                    position: relative;
+                    overflow: clip;
+                    display: grid;
+                    grid-template: 34% 66% / 100%;
                     grid-template-areas: "avatar"
                                          "posts";
                 }

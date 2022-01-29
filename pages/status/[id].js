@@ -51,7 +51,7 @@ const NettPage = (props) => {
                     </span>
                     {listComments.map((nettComment) => {
                         return (
-                            <Comment key={nettComment.id} userName={nettComment.userName} avatar={nettComment.avatar} content={nettComment.content}  createdAt={nettComment.createdAt} uid={nettComment.userId}/>
+                            <Comment key={nettComment.id} id={nettComment.id} userName={nettComment.userName} avatar={nettComment.avatar} content={nettComment.content}  createdAt={nettComment.createdAt} uid={nettComment.userId} originalNettId={props.id}/>
                         )
                     })} 
                 </div>

@@ -37,24 +37,7 @@ export const onAuthStateChanged = (onChange) => {
             onChange(normalizedUser)
         })
 }
-// ESTE ES EL BLOQUE YA FUNCIONA;
-// export const signUpWithEmailAndPassword = (email, pass, userName) => {
-//     return firebase
-//         .auth()
-//         .createUserWithEmailAndPassword(email,pass)
-//         .then(() => {
-//             const usuario = firebase.auth().currentUser
-//             usuario.updateProfile({
-//                 displayName: userName,
-//                 photoURL: "https://i.postimg.cc/d3f6FXDs/default-user.png"
-//             })
-//         })
-// }
 
-
-// ESTE ES EL BLOQUE PARA PROBAR LA VERIFICACION DE LA CUENTA POR EMAIL;
-//ya funciona la verificacion de correo ahora solo falta mejorara la UX, ya que cuando me registro si me envia el correo de verificacion,pero en la app solo veo el formulario lleno y no me esta saliendo ningun mensaje de que necesito verificar para poder ingresar a la cuenta( por supuesto tambien tengo que hacer real esto en las reglas de seguridad de la consola de firebase para que asi solamente puedan ingresar los usuarios verificados)
-// EN LA CLASE 8 DEL CURSO FIREBASE PARA LA WEB VEMOS LO DEL CORREO DE VERIFICACION
 
 export const signUpWithEmailAndPassword = (email, pass, userName) => {
     return firebase
@@ -119,6 +102,8 @@ export const signOut = () => {
         .signOut()
 }
 
+
+// Netters (collection "netters") *******************************************************
 export const addNett = ({avatar, content, userId, userName, img}) => {
     return db.collection('netters').add({
         avatar,
@@ -132,43 +117,11 @@ export const addNett = ({avatar, content, userId, userName, img}) => {
     })
 }
 
-// con esta funcion quiero guardar en una nueva coleccion llamada "biographies" lo que cada usuario quiera colocar en  su seccion de bigrafia de su perfil. Lo que podria hacer es un hook que haga el fetch de esta biografia y usando esto filtrarlo por el uid que ya poseeria la cloeccion, y asi traer el contenido correspondiente;
-export const addBiography = ({ content, userId }) => {
-    return db.collection('biographies').add({
-        content,
-        userId
-    })
-}
-
-export const addComment = ({ content }, nettId) => {
-
-    const currentUser = firebase.auth().currentUser
-
-    return db
-        .collection('netters')
+export const deleteNett = (nettId) => {
+    return db   
+        .collection("netters")
         .doc(nettId)
-        .collection('comments')
-        .add({
-            avatar: currentUser.photoURL,
-            content,
-            userId: currentUser.uid,
-            userName: currentUser.displayName,
-            createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
-        })
-}
-
-const mapDevitFromFirebaseToDevitObject = (doc) => {
-    const data = doc.data()
-    const id = doc.id
-    const {createdAt} = data     
-    
-    //tengo que hacer uso del userId , el cual saco de data , para de esta manera filtrar los post de un usuario en especifico y asi mostrarlos en su perfil
-
-    return {
-        ...data,
-        id,
-        createdAt: +createdAt.toDate()
-    }
+        .delete()
 }
 
 export const listenLatestDevits = (callback) => {
@@ -204,6 +157,35 @@ export const getUserProfile = (uid , callback) => {
         })
 }
 
+//****************************************************************************** */
+
+
+// con esta funcion quiero guardar en una nueva coleccion llamada "biographies" lo que cada usuario quiera colocar en  su seccion de bigrafia de su perfil. Lo que podria hacer es un hook que haga el fetch de esta biografia y usando esto filtrarlo por el uid que ya poseeria la cloeccion, y asi traer el contenido correspondiente;
+export const addBiography = ({ content, userId }) => {
+    return db.collection('biographies').add({
+        content,
+        userId
+    })
+}
+
+// Comments  (subcollection "comments" of "netters" collection) *******************************************************
+export const addComment = ({ content }, nettId) => {
+
+    const currentUser = firebase.auth().currentUser
+
+    return db
+        .collection('netters')
+        .doc(nettId)
+        .collection('comments')
+        .add({
+            avatar: currentUser.photoURL,
+            content,
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            createdAt: firebase.firestore.Timestamp.fromDate(new Date()),
+        })
+}
+
 export const getNettComments = (nettId, callback) => {
     return db
         .collection('netters')
@@ -215,6 +197,52 @@ export const getNettComments = (nettId, callback) => {
             callback(newComments)
         })
 }
+export const getUserComments = (uid, callback) => {
+    return db
+        .collectionGroup("comments")
+        .where("userId", "==", uid)
+        .onSnapshot(({docs}) => {
+            const mapeo = docs.map(doc => {
+                console.log("mapeo con onSnapshot", doc.data())
+                const data = doc.data()
+                const id = doc.id
+
+                return {
+                    ...data,
+                    id
+                }
+            })
+
+            callback(mapeo)
+        })
+}
+
+export const deleteComment = (originalNettId, commentId) => {
+    return db   
+        .collection("netters")
+        .doc(originalNettId)
+        .collection("comments")
+        .doc(commentId)
+        .delete()
+}
+
+//**************************************************************** */
+
+
+const mapDevitFromFirebaseToDevitObject = (doc) => {
+    const data = doc.data()
+    const id = doc.id
+    const {createdAt} = data     
+    
+    //tengo que hacer uso del userId , el cual saco de data , para de esta manera filtrar los post de un usuario en especifico y asi mostrarlos en su perfil
+
+    return {
+        ...data,
+        id,
+        createdAt: +createdAt.toDate()
+    }
+}
+
 
 export const fetchLatestNetts = () => {
     return db.collection('netters')
@@ -249,14 +277,24 @@ export const updateUserProfile = ({name, avatarUrl}, callback) => {
     })
     
     db.runTransaction(async transaction => {
-        const query = await db.collection("netters")
+        const forNetters = await db.collection("netters")
             .where("userId", "==", userId)
             .get()
     
-        query.forEach( doc => {
+        forNetters.forEach( doc => {
             transaction.update(doc.ref,{avatar: ifAvatarUrl, userName: ifUserName})
         })
-    }).then(callback)
+    }).then(callback).catch(() => alert("ups algo no fue bien , intenta mas tarde"))
+
+    db.runTransaction(async transaction => {
+        const forComments = await db.collectionGroup("comments")
+            .where("userId", "==", userId)
+            .get()
+    
+        forComments.forEach( doc => {
+            transaction.update(doc.ref,{avatar: ifAvatarUrl, userName: ifUserName})
+        })
+    })
 
 }
 
@@ -273,6 +311,8 @@ export const getCurrentUser = (callback) => {
 
 }
 
+
+// Favorites (collection "favorites")*******************************************************************
 export const addFavs = ({ avatar, content, img, currentUserId,nettUserId, userName, createdAt, originalNettId}) => {
 
     return db
@@ -321,7 +361,7 @@ export const getUserFavsNetts = (callback) => {
         })
 }
 
-export const getUserFavsDocId = (id ,callback) => {
+export const getUserFavIconId = (id ,callback) => {
 
     // const currentUser = firebase.auth().currentUser
 
@@ -342,8 +382,28 @@ export const getUserFavsDocId = (id ,callback) => {
         })
 }
 
-// ++++++++++++++++ test prueba para el state del favIcon
+export const getAllFavsNetts = (callback) => {
 
+    return db
+        .collection("favorites")
+        .onSnapshot( ({docs}) => {
+            const favsNetts = docs.map( doc => {
+                const data = doc.data()
+                const id = doc.id     
+                
+                return {
+                    ...data,
+                    id
+                }
+            })
+            callback(favsNetts)
+        })
+}
+
+//**************************************************************************** */
+
+
+// FavoriteIcon (subcollection "favs" of "netters" collection) ***********************
 export const addStateFavIcon = ({ fav }, nettId, favIconId) => {
 
     const currentUser = firebase.auth().currentUser
@@ -364,7 +424,6 @@ export const deleteFavIcon = (nettId, favIconId) => {
         .collection('netters')
         .doc(nettId)
         .collection('favs')
-        // .where("userId", "==", currentUser.uid) deberia colocar este filtro para eliminar solo los favs qeu coincidan con el currentUser ??
         .doc(favIconId)
         .delete()
 }
@@ -392,3 +451,5 @@ export const getStateFavIcon = (nettId, callback) => {
             callback(stateIcon)
         })
 }
+
+//******************************************************************* */

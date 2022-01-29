@@ -5,9 +5,14 @@ import Link from "next/link"
 import useDateTimeFormat from "hooks/useDateTimeFormat"
 import { useState, useEffect } from "react"
 import useUser from "hooks/useUser"
-import { getNettComments } from "firebase/client"
+import { deleteFavs, deleteNett, getAllFavsNetts, getNettComments } from "firebase/client"
 import Comments from "components/Icons/Comments"
 import FavStar from "components/FavStar"
+import useCurrentUser from "hooks/useCurrentUser"
+import Delete from "components/Icons/Delete"
+import NettImage from "components/NettImage"
+import useFavsNetts from "hooks/useFavsNetts"
+import useCustomAlerts from "hooks/useCustomAlerts"
 
 const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
 
@@ -17,6 +22,8 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
     const [lenghtComments , setLenghtComments] = useState([])
 
     const user = useUser()
+    const currentUser = useCurrentUser()
+    const { optionsAlertMessage, toast } = useCustomAlerts()
 
     // *** aqui mandamos a llamar la subcoleccion "comments" para mostrar su .lenght en un icono de comentarios
     useEffect(() => {
@@ -40,9 +47,56 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
 
     const handleClickProfile = (e) => {
         e.preventDefault()
-        router.push(`/userprofile/${uid}`) //este uid que pasamos como parametro es el sacaremos de la data de cada docuemneto
+        if(uid === currentUser.userId){
+            router.push('/profile')
+        } else {
+            router.push(`/userprofile/${uid}`)
+        }
+        
+        //este uid que pasamos como parametro es el sacaremos de la data de cada docuemneto
         
     }
+
+    // prueba de eliminacion conjunta del nettOriginal y su favNett correspondiente*******
+
+    const [allfavNetts, setAllfavNetts] = useState([])
+
+    console.log("este es el contenido de allFavNetts: ", allfavNetts)
+
+    const handleClickDeleteNett = () => {
+        optionsAlertMessage.fire({
+            text: 'Segur@ que quieres eliminar este Nett?',
+            color: 'black'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                deleteNett(id).then(() => {
+                    toast.fire({
+                        text: 'Nett eliminado',
+                        color: 'black',
+                        icon: 'success'
+                      })
+                    })
+                allfavNetts.forEach( doc => {
+                    if(doc.id.includes(id)){
+                        deleteFavs(doc.id)
+                    }
+                })
+                
+            } 
+          })
+    }
+
+    useEffect(() => {
+        let unsubscribe
+        if (user) {
+            unsubscribe = getAllFavsNetts( favsNetts => {
+                setAllfavNetts(favsNetts)
+            })
+        }
+
+        return () => unsubscribe && unsubscribe()
+        
+    }, [user])
 
     const commentsNumber = lenghtComments.length > 0 ? lenghtComments.length : null
     
@@ -53,11 +107,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
             <Avatar onClick={handleClickProfile} src={avatar} alt={userName} />
             <div>
                 <header>
-                    <Link href={`/userprofile/${uid}`}>
-                        <a>
-                            <h5>{userName}</h5>
-                        </a>
-                    </Link>
+                    <h5 onClick={handleClickProfile}>{userName}</h5>
                     <span></span>
                     <Link href={`/status/${id}`}>
                         <a>
@@ -66,7 +116,9 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
                     </Link>
                 </header>
                 <p onClick={handleClick}>{content}</p>
-                {img && <img src={img}/>}
+                {/* aqui ira el componente NettImage */}
+                {img && <NettImage src={img} />}
+                {/* {img && <img src={img} />} */}
                 <div className="comment-fav_container">
                     <span onClick={handleClick} className="comments-icon">
                         <Comments  width="2.5rem" height="2.5rem" />
@@ -75,6 +127,11 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
                     <FavStar nettId={id} avatar={avatar} content={content} img={img} createdAt={createdAt} userName={userName} nettUserId={uid}/>
                 </div>
             </div>
+            { uid === currentUser.userId && (
+                <span className="delete-icon" onClick={handleClickDeleteNett}>
+                    <Delete width="2rem" height="2rem"/>
+                </span>
+            )}
         </article>
 
         <style jsx>{`
@@ -86,6 +143,11 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
                 height: fit-content;
                 font-size: 1.8rem;
                 border-bottom: 1px solid #80808057;
+                position: relative;
+            }
+
+            div {
+                width: 100%;
             }
 
             .avatar-image {
@@ -120,9 +182,12 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
             }
             img {
                 width: 100%;
+                min-width: 100%;
                 height: auto;
+                min-height: 200px;
                 border-radius: 10px;
                 margin-top: 1rem;
+                background: #80808073;
             }
             a {
                 text-decoration: none;
@@ -162,6 +227,16 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
                 display: flex;
                 justify-content: space-between;
                 width: 100%;
+            }
+
+            .delete-icon {
+                position: absolute;
+                top: 1rem;
+                right: 0.5rem;
+                width: fit-content;
+                height: fit-content;
+                background: none;
+                cursor: pointer;
             }
 
         `}</style>

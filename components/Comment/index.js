@@ -3,8 +3,12 @@ import useTimeAgo from "hooks/useTimeAgo"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import useDateTimeFormat from "hooks/useDateTimeFormat"
+import { deleteComment } from "firebase/client"
+import Delete from "components/Icons/Delete"
+import useCurrentUser from "hooks/useCurrentUser"
+import useCustomAlerts from "hooks/useCustomAlerts"
 
-const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
+const Comment = ({ userName, avatar, content, createdAt, img, uid, id, originalNettId}) => {
 
     const timeAgo = useTimeAgo(createdAt)
     const createdAtFormated = useDateTimeFormat(createdAt)
@@ -12,14 +16,35 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
     // sacar el uid para pasarselo como parametro al link
 
     const router = useRouter()
+    const currentUser = useCurrentUser()
+    const { toast, optionsAlertMessage } = useCustomAlerts()
 
 
     const handleClickProfile = (e) => {
         e.preventDefault()
-        router.push(`/userprofile/${uid}`) //este uid que pasamos como parametro es el sacaremos de la data de cada docuemneto
-        
+        if(uid === currentUser.userId){
+            router.push('/profile')
+        } else {
+            router.push(`/userprofile/${uid}`)
+        }        
     }
-    
+
+    const handleClickDeleteComment = () => {
+        optionsAlertMessage.fire({
+            text: 'Segur@ que quieres eliminar este comentario?',
+            color: 'black'
+          }).then((result) => {
+            if (result.isConfirmed) {
+                deleteComment(originalNettId, id).then(() => {
+                    toast.fire({
+                        text: 'Comentario eliminado',
+                        color: 'black',
+                        icon: 'success'
+                      })
+                })
+            } 
+          })
+    }    
     return (
         <>
         <article>
@@ -27,17 +52,19 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
                 <Avatar onClick={handleClickProfile} src={avatar} alt={userName} width="35px" height="35px"/>
                 <div>
                     <header>
-                        <Link href={`/userprofile/${uid}`}>
-                            <a>
-                                <h5>{userName}</h5>
-                            </a>
-                        </Link>
+                        <h5 onClick={handleClickProfile}>{userName}</h5>
                         <span></span>
                         <time title={createdAtFormated}>{timeAgo}</time>
                     </header>
                     <p>{content}</p>
                     {img && <img src={img}/>}
                 </div>
+                {uid === currentUser.userId && (
+                    <span className="delete-icon" onClick={handleClickDeleteComment}>
+                        <Delete width="2rem" height="2rem"/>
+                    </span>
+                )}
+               
             </div>
         </article>
 
@@ -56,6 +83,7 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
                 width: 100%;
                 padding: 1rem;
                 display: flex;
+                position: relative;
             }
 
             .avatar-image {
@@ -113,6 +141,16 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid}) => {
                 background: grey;
                 border-radius: 50%;
                 border: none;
+            }
+
+            .delete-icon {
+                position: absolute;
+                top: .5rem;
+                right: 2rem;
+                background: none;
+                cursor: pointer;
+                width: fit-content;
+                height: fit-content;
             }
 
         `}</style>

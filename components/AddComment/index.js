@@ -35,7 +35,7 @@ const AddComment = ({idNett}) => {
         e.preventDefault()
         addComment({
             content: comment
-        }, idNett)
+        }, idNett).then(() => setComment(""))
         console.log("comentario hecho")
     }
 
@@ -59,10 +59,13 @@ const AddComment = ({idNett}) => {
                     justify-content: space-between;
                     align-items: center;
                     display: flex;
-                    border: 1px solid red;
+                    /* border: 1px solid red; */
+                    border-right: 2px solid black;
+                    border-left: 2px solid black;
                     padding: 2rem 1rem;
                     background: white;
                     border-top: 2px solid black;
+                    border-radius: 25px 25px 0 0;
                 }
 
                 textarea {

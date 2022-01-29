@@ -6,6 +6,8 @@ import { useRouter } from "next/router"
 import Avatar from "components/Avatar"
 import BackNav from "components/BackNav"
 import Loader from "components/Loader"
+import Close from "components/Icons/Close"
+import AddPhoto from "components/Icons/AddPhoto"
 
 
 const COMPOSE_STATES = {
@@ -65,6 +67,7 @@ const ComposeTweet = () => {
             userId: user.uid,
             userName: user.username,
             img: imageURL
+            // primero debo subir la imagen al storage para asi obtener su URL y asi agregar dicha url al Nett
         }).then(() => {
             router.push('/home')
         }).catch( err => {
@@ -91,10 +94,52 @@ const ComposeTweet = () => {
         const task = uploadImage(file)
         setTask(task)
     }
+    
+    //aqui empieza la logica para el input=file Foto +
+    // const [ inputImage, setInputImage] = useState(null)
+    // const [ inputFileVal, setInputFileVal] = useState(null)
 
-    const handleClickPhoto = () => {
-        console.log("alert con imagen")
+    const handleChangeFileInput = (e) => {
+        const file = e.target.files[0]
+        console.log(e.target)
+        console.log(e.target.files[0])
+        // setInputImage(file)
+        //este inputImage es la que se sube al storage
+
+        const task = uploadImage(file)
+        setTask(task)
+
+
+        // if (file){
+        //     const reader = new FileReader()
+        //     reader.onload = (e) => {
+        //         setInputFileVal(e.target.result)
+        //         //este muestra la imagen preview
+        //     }
+        //     reader.readAsDataURL(file)
+        // }
     }
+
+    // useEffect(() => {
+    //     if(inputImage){
+    //         const task = uploadImage(inputImage)
+    //         console.log("subido?")
+    //         setTask(task)
+    //     }
+    // }, [inputImage])
+
+    // const handleClickRemoveImg = () => {
+    //     setInputImage(null)
+    // }
+
+    // // tengo que combinar este handleSubmit con el original que ya estaba aqui, el cual agrega la info a la coleccion "netters"
+    // const handleSubmitInputFile = (e) => {
+    //     e.preventDefault()
+    //     const task = uploadImage(inputImage)
+    //     console.log("subido?")
+    //     setTask(task)
+    //     // Primero tiene que suceder este Submit para asi obtener la URL de la imagen, y asi colocar esta url en la key img que se insertara como doc en la coleccion "netters"
+    // }
 
     console.log(task)
     
@@ -110,7 +155,7 @@ const ComposeTweet = () => {
                 </div>
             )}
             <form onSubmit={handleSubmit}>
-                <textarea maxlength="200"onChange={handleChange} 
+                <textarea maxLength="200"onChange={handleChange} 
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -128,7 +173,25 @@ const ComposeTweet = () => {
                         <img src={imageURL} />  
                     </div>
                 )}
-                <span onClick={handleClickPhoto}>Foto +</span>
+                {/* aqui empieza en input=file Foto + */}
+                {/* este tag Form esta de mas ya que todo ya va dentro de un tag Form, lo que hay que hacer es combinar el onSubmit de este Form con el del Form principla de este componente createNett*/}
+                {/* <form onSubmit={handleSubmitInputFile}> */}
+                <div className="input-img_container">
+                    <span className="input-content">
+                        <AddPhoto widht="4rem" height="4rem"/>
+                    </span>                 
+                    <input className ="input-file" type="file" onChange={handleChangeFileInput}></input> 
+                </div>
+                {/* {inputFileVal && (
+                    <div className="img-preview_container">
+                        <span className="remove-img" onClick={handleClickRemoveImg}>
+                            <Close width="2rem" height="2rem" />
+                        </span>
+                        <img className="img-preview" src={inputFileVal} />
+                    </div>
+                )}             */}
+                {/* </form> */}
+                {/* ****************** */}
                 <div className="button-container"> 
                     <Button disabled={isButtonDisabled} background="black">Nettear</Button>
                 </div>
@@ -150,18 +213,19 @@ const ComposeTweet = () => {
                 padding-top: 1.5rem;
                 display: flex;
                 justify-content: center;
-                margin-right: -2rem;
+                margin-left: -1rem;
+                margin-top: -1rem;
             }
 
             form {
                 width: 100%;
-                padding: 1rem 0 1rem 1rem;
+                /* padding: 1rem 0 1rem 1rem; */
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
             }
             textarea {
-                border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER ? "3px dashed cyan" : "3px solid #d3d3d347"};
+                border: ${drag === DRAG_IMAGE_STATES.DRAG_OVER ? "3px dashed cyan" : "3px solid #d3d3d38a"};
                 padding: 1rem;
                 font-family: 'Poppins', sans-serif;
                 font-size: 1.8rem;
@@ -211,21 +275,81 @@ const ComposeTweet = () => {
             }
 
             span {
-                background: black;
+                /* background: black; */
                 color: white;
-                font-size: 20px;
+                font-size: 30px;
                 cursor: pointer;
-                padding: 5px 8px;
+                /* padding: 5px 8px; */
                 width: fit-content;
                 border-radius: 5px;
                 margin-top: 1rem;
             }
 
+            .input-img_container {
+                width: 60px;
+                height: 60px;
+                background: black;
+                color: white;
+                /* border: 2px solid black; */
+                border-radius: 8px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 16px;
+                /* padding: 1rem; */
+                position: relative;
+                cursor: pointer;
+                margin-top: 1rem;
+            }
+            .input-img_container:active{
+                filter: invert(1);
+            }
+            .input-content {
+                position: absolute;
+                left: 16px;
+                widht: fit-content;
+                height: fit-content;
+            }
+            input[type="file"]{
+                opacity: 0;
+                height: 61px;
+                width: 100%;
+                cursor: pointer;
+                padding: 2rem;
+                positon: absolute;
+                z-index: 10;
+            }
+
+            .img-preview_container {
+                background: white;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 90%;
+                padding: 1rem;
+            }
+            .img-preview {
+                object-fit: contain;
+                width: 90%;
+                height: 80%;
+                margin: 0 auto;
+                border-radius: 8px;
+            }
+
+            .remove-img {
+                position: absolute;
+                top: .5rem;
+                right: .5rem;
+                width: fit-content;
+                height: fit-content;
+            }
+
             .button-container {
                 width: fit-content;
                 display: flex;
-                margin-left: 1.8rem;
-                margin-top: 1.8rem;
+                /* margin-left: 1.8rem; */
+                margin-top: 2rem;
             }
 
         `}</style>

@@ -31,6 +31,7 @@ export default (request, response) => {
             })
             
             response.json({
+                uid,
                 mapeo
             })
                 // con este metodo estoy viendo todo los docs mapeados en consola

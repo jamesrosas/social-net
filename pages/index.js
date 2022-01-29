@@ -9,12 +9,13 @@ import { loginWithGitHub, loginWithGoogle, signUpWithEmailAndPassword, signInWit
 import GoogleIcon from 'components/Icons/Google'
 import AnimateLogo from 'components/AnimateLogo'
 import LoginModal from 'components/LoginModal'
-import Swal from 'sweetalert2'
+import useCustomAlerts from 'hooks/useCustomAlerts'
 
 export default function Home() {
 
   const user = useUser()
   const router = useRouter()
+  const { singleAlertMessage } = useCustomAlerts()
 
   const [modal, setModal] = useState(false)
   const [modal2, setModal2] = useState(false)
@@ -26,17 +27,16 @@ export default function Home() {
 
   const form = useRef(null)
 
+
   useEffect(() => {
     user && router.replace('/home')
   }, [user])
 
   const handleClickSignUp = () => {
     setModal(!modal)
-    console.log("cambiando estado modal")
   }
   const handleClickSignIn = () => {
     setModal2(!modal2)
-    console.log("modal2")
   }
 
   const handleChangeEmail = (e) => {
@@ -51,37 +51,12 @@ export default function Home() {
     setPass(e.target.value)
   }
 
-  const alertMessage = Swal.mixin({
-    showConfirmButton: true,
-    confirmButtonText: 'OK',
-    customClass: {
-      container: 'alert-container',
-      confirmButton: 'btn-class',
-      content: 'content-class',
-      popup: 'popup-class',
-      htmlContainer: 'letra-style'
-    },
-    buttonsStyling: false,
-    backdrop:`rgba(0,0,123,0.4)`,
-    showClass:{
-      popup: 'swal2-show',
-      backdrop: 'swal2-backdrop-show',
-      icon: 'swal2-icon-show'
-    },
-    hideClass:{
-      popup: 'swal2-hide',
-      backdrop: 'swal2-backdrop-hide',
-      icon: 'swal2-icon-hide'
-    },
-  })
-
-
   const handleSubmitSignUp = (e) => {
     e.preventDefault()
     console.log(email, pass)
     signUpWithEmailAndPassword(email, pass, userName)
       .then(() => {
-        alertMessage.fire({
+        singleAlertMessage.fire({
           text: 'Te hemos enviado un email para verificar tu cuenta',
           color: '#05b605',
           icon: "info"
@@ -89,7 +64,7 @@ export default function Home() {
         setEmail("")
         setPass("")
         setUserName("")
-      }).catch(({message}) => alertMessage.fire({
+      }).catch(({message}) => singleAlertMessage.fire({
         text: message,
         icon: "info",
         color: '#ff0000'
@@ -103,7 +78,7 @@ export default function Home() {
     signInWithEmailAndPassword(email, pass)
       .then(result => {
         if(!result.user.emailVerified){
-          alertMessage.fire({
+          singleAlertMessage.fire({
             text: 'Primero debes verificar tu email',
             icon: "info",
             color: '#ff0000'
@@ -116,7 +91,7 @@ export default function Home() {
 
   const handleClickResetPass = () =>{
       sendEmailToResetPassword(email)
-        .then(() => alertMessage.fire({
+        .then(() => singleAlertMessage.fire({
           text: 'Te hemos enviado un email para reestablecer tu contraseña',
           color: '#05b605',
           icon: "info"

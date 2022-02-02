@@ -1,7 +1,7 @@
 import BackNav from "components/BackNav"
 import { updateUserProfile, uploadImage } from "firebase/client"
 import useUser from "hooks/useUser"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Swal from "sweetalert2"
 import Devit from "components/Devit"
 import Loader from "components/Loader"
@@ -151,6 +151,14 @@ const Profile = () => {
         setEditName(false)
     }
 
+    const Form = useRef()
+
+    useEffect(() => {
+        if(!inputFileValue){
+            Form.current.reset()
+        }
+    }, [inputFileValue])
+
 
     return (
         <>
@@ -235,7 +243,7 @@ const Profile = () => {
                     }
                     <ProfileModal modalClass={modalProfile ? 'modal modalOn' : 'modal'} onClick={handleClickModalProfile}>
                         <p className="message-avatar">Escoje una imagen como tu avatar</p>
-                        <form onSubmit={handleSubmitInputFile}>
+                        <form ref={Form} onSubmit={handleSubmitInputFile}>
                             <div className="input-file_container">
                                 <p className="input-message">seleccionar imagen</p>                 
                                 <input className ="input-file" type="file" onChange={handleChangeInputFile} ></input> 
@@ -312,7 +320,7 @@ const Profile = () => {
                 }
                 .posts-section {
                     grid-area: posts;
-                    border: 1px solid blue;
+                    /* border: 1px solid blue; */
                     position: relative;
                     padding-bottom: 2rem;
                     width: 100%;
@@ -349,7 +357,7 @@ const Profile = () => {
                 .avatar-container {
                     position: relative;
                     width: fit-content;
-                    border: 1px solid red;
+                    /* border: 1px solid red; */
                     margin: 1rem auto 0 auto;
                 }
 
@@ -395,7 +403,7 @@ const Profile = () => {
                 .update-name_container {
                     width: 100%;
                     height: 50px;
-                    border: 1px solid red;
+                    /* border: 1px solid red; */
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -412,7 +420,7 @@ const Profile = () => {
 
                 .update-name_input {
                     padding: 5px;
-                    border: 1px solid red;
+                    /* border: 1px solid red; */
                     position: absolute;
                     display: flex;
                     justify-content: center;

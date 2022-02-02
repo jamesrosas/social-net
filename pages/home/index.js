@@ -1,35 +1,23 @@
 import Devit from "components/Devit"
 import CreateIcon from "components/Icons/Create"
-import { listenLatestDevits, signOut } from "firebase/client"
+import { signOut } from "firebase/client"
 import useUser from "hooks/useUser"
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import HomeIcon from "components/Icons/Home"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import Loader from "components/Loader"
+import useGetNetts from "hooks/useGetNetts"
+import Search from "components/Icons/Search"
 
 const Timeline = () => {
 
-    const [timeline, setTimeline] = useState([])
-
     const user = useUser()
+    const { allNetts } = useGetNetts()
 
     console.log(user)
 
     const router = useRouter()
-
-    useEffect(() => {
-        let unsubscribe
-        if (user) {
-            unsubscribe = listenLatestDevits( newDevits => {
-                setTimeline(newDevits)
-            })
-        }
-
-        return () => unsubscribe && unsubscribe()
-        
-    }, [user])
 
     const handleLogOut = () => {
         signOut().then( () => {
@@ -37,7 +25,6 @@ const Timeline = () => {
         })
     }
 
-    console.log(timeline)
 
     return (
         <>
@@ -51,17 +38,17 @@ const Timeline = () => {
                 </ul>
             </header>
             <section>
-                {timeline.map( devit => {
+                {allNetts.map( devit => {
                     return (
                         <Devit key={devit.id} id={devit.id} userName={devit.userName} avatar={devit.avatar} content={devit.content}  createdAt={devit.createdAt} img={devit.img} uid={devit.userId}/>
                     )
                 })}
-                {!timeline.length && (
+                {!allNetts.length && (
                     <div className="home-loader_container">
                         <Loader/>
                     </div>
                 )}
-                {timeline.length > 0 && (
+                {allNetts.length > 0 && (
                     <span>Estás al día</span>
                 )}
             </section>
@@ -70,6 +57,11 @@ const Timeline = () => {
                     <Link href="/"> 
                         <a>
                             <HomeIcon fill="cyan"  width={35} height={35}/>
+                        </a>
+                    </Link>
+                    <Link href="/search"> 
+                        <a title="Search User">
+                            <Search width="3rem" height="3rem" stroke="cyan"/>
                         </a>
                     </Link>
                     <Link href="/compose/tweet"> 
@@ -170,7 +162,7 @@ const Timeline = () => {
 
                 nav a:hover{
                     background: #dedede9c;
-                    border-radius: 10px;
+                    border-radius: 40px;
                 }
 
                 header, footer {

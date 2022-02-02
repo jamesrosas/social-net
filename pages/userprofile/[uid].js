@@ -1,10 +1,8 @@
 import { useRouter } from "next/router"
 import BackNav from "components/BackNav"
 import Devit from "components/Devit"
-import { useState, useEffect } from "react"
-import { getUserComments } from "firebase/client"
-import useUser from "hooks/useUser"
 import NettImage from "components/NettImage"
+import useGetComments from "hooks/useGetComments"
 
 
 const UserProfilePage = (props) => {
@@ -13,22 +11,7 @@ const UserProfilePage = (props) => {
     if(router.isFallback) return "loading...."  
     // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
    
-    const user = useUser()
-    const [commentsData, setCommentsData] = useState([])
-
-    console.log("este es el contenido de commentsData: ", commentsData )
-
-    useEffect(() => {
-        let unsubscribe
-        if (user) {
-            unsubscribe = getUserComments( props.uid,  newComments => {
-                setCommentsData(newComments)
-            })
-        }
-
-        return () => unsubscribe && unsubscribe()
-        
-    }, [user])
+    const commentsData = useGetComments(props.uid)
 
     return (
         <>

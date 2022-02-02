@@ -148,7 +148,7 @@ export default function Home() {
               <LoginModal modalClass={modal ? 'modal modalOn' : 'modal'} onClick={handleClickSignUp}>
                 <form ref={form} onSubmit={handleSubmitSignUp}>
                   <input placeholder='Email' value={email} onChange={handleChangeEmail} pattern="^[a-z0-9_]+(\.[a-z0-9_]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required></input>
-                  <input placeholder='Username' maxlength="15" value={userName} onChange={handleChangeUser} pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required></input>
+                  <input placeholder='Username' maxLength="15" value={userName} onChange={handleChangeUser} pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required></input>
                   <input placeholder='Password' value={pass} onChange={handleChangePass} type="password" required></input>
                   <Button>
                     Registrarse

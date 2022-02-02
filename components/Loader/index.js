@@ -10,7 +10,7 @@ const Loader = () => {
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                margin: 3rem 0;
+                /* margin: 3rem 0; */
             } 
             span {
                 width: 50px;

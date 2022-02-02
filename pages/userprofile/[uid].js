@@ -49,7 +49,7 @@ const UserProfilePage = (props) => {
                             <div className="tab-container">
                                 <p className="tab-section">Netts</p>
                             </div>
-                            <div className="no-netts_container">
+                            <div className="no-netts_container" >
                                 <p>{commentsData[0].userName} no ha publicado nada aún :/</p>
                                 <img src="https://i.postimg.cc/s2N6Czyg/nonetts.gif" width={200} />
                             </div>

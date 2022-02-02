@@ -20,7 +20,7 @@ import NettImage from "components/NettImage"
 const Profile = () => {
 
     const user = useUser()
-    const favsUserTimeline = useFavsNetts()
+    const { favsUserTimeline } = useFavsNetts()
 
     const [userTimeline , setUserTimeline] = useState([])
     const [modalProfile, setModalProfile] = useState(false)
@@ -230,13 +230,13 @@ const Profile = () => {
                             })}
                             {!userTimeline.length && (
                                 <div className="loader-user_container">
-                                    <p>Crea tu primer post  
+                                    <span>Crea tu primer post  
                                         <Link href="/compose/tweet">
                                             <a>
                                                 <p>aqui</p>
                                             </a>
                                         </Link>
-                                    </p>
+                                    </span>
                                 </div>
                             )}
                         </article>
@@ -481,9 +481,10 @@ const Profile = () => {
                     font-size: 1.7rem;
                 }
 
-                .loader-user_container p {
+                .loader-user_container span {
                     width: fit-content;
                     margin: 0 auto;
+                    text-align: center;
                 }
 
                 .user-timeline {

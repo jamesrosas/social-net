@@ -13,7 +13,7 @@ const NettPage = (props) => {
 
     const [listComments, setListComments] = useState([])
 
-    console.log(listComments)
+    // console.log(listComments)
 
     const user = useUser()
 
@@ -35,8 +35,8 @@ const NettPage = (props) => {
         
     }, [user])
 
-    console.log("este es el id del nett, el mismo de la url")
-    console.log(props.id)
+    // console.log("este es el id del nett, el mismo de la url")
+    // console.log(props.id)
 
     return (
         <>  

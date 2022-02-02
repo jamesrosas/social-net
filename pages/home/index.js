@@ -15,7 +15,7 @@ const Timeline = () => {
     const user = useUser()
     const { allNetts } = useGetNetts()
 
-    console.log(user)
+    // console.log(user)
 
     const router = useRouter()
 

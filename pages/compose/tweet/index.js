@@ -6,7 +6,6 @@ import { useRouter } from "next/router"
 import Avatar from "components/Avatar"
 import BackNav from "components/BackNav"
 import Loader from "components/Loader"
-import Close from "components/Icons/Close"
 import AddPhoto from "components/Icons/AddPhoto"
 
 
@@ -40,12 +39,12 @@ const ComposeTweet = () => {
     useEffect(() => {
         if (task) {
           const onProgress = () => {
-              console.log('cargando imagen...')
+            //   console.log('cargando imagen...')
               setLoadImage(true)
           }
           const onError = () => {}
           const onComplete = () => {
-            console.log('onComplete')
+            // console.log('onComplete')
             setLoadImage(false)
             task.snapshot.ref.getDownloadURL().then((url) => setImageURL(url))
           }
@@ -89,59 +88,23 @@ const ComposeTweet = () => {
         setDrag(DRAG_IMAGE_STATES.NONE)
         
         const file = e.dataTransfer.files[0]
-        console.log(e.dataTransfer)
-        console.log(e.dataTransfer.files[0])
+        // console.log(e.dataTransfer)
+        // console.log(e.dataTransfer.files[0])
         const task = uploadImage(file)
         setTask(task)
     }
     
-    //aqui empieza la logica para el input=file Foto +
-    // const [ inputImage, setInputImage] = useState(null)
-    // const [ inputFileVal, setInputFileVal] = useState(null)
-
     const handleChangeFileInput = (e) => {
         const file = e.target.files[0]
-        console.log(e.target)
-        console.log(e.target.files[0])
-        // setInputImage(file)
-        //este inputImage es la que se sube al storage
+        // console.log(e.target)
+        // console.log(e.target.files[0])
 
         const task = uploadImage(file)
         setTask(task)
 
-
-        // if (file){
-        //     const reader = new FileReader()
-        //     reader.onload = (e) => {
-        //         setInputFileVal(e.target.result)
-        //         //este muestra la imagen preview
-        //     }
-        //     reader.readAsDataURL(file)
-        // }
     }
 
-    // useEffect(() => {
-    //     if(inputImage){
-    //         const task = uploadImage(inputImage)
-    //         console.log("subido?")
-    //         setTask(task)
-    //     }
-    // }, [inputImage])
-
-    // const handleClickRemoveImg = () => {
-    //     setInputImage(null)
-    // }
-
-    // // tengo que combinar este handleSubmit con el original que ya estaba aqui, el cual agrega la info a la coleccion "netters"
-    // const handleSubmitInputFile = (e) => {
-    //     e.preventDefault()
-    //     const task = uploadImage(inputImage)
-    //     console.log("subido?")
-    //     setTask(task)
-    //     // Primero tiene que suceder este Submit para asi obtener la URL de la imagen, y asi colocar esta url en la key img que se insertara como doc en la coleccion "netters"
-    // }
-
-    console.log(task)
+    // console.log(task)
     
     const isButtonDisabled = !message.length || status === COMPOSE_STATES.LOADING
     
@@ -173,25 +136,12 @@ const ComposeTweet = () => {
                         <img src={imageURL} />  
                     </div>
                 )}
-                {/* aqui empieza en input=file Foto + */}
-                {/* este tag Form esta de mas ya que todo ya va dentro de un tag Form, lo que hay que hacer es combinar el onSubmit de este Form con el del Form principla de este componente createNett*/}
-                {/* <form onSubmit={handleSubmitInputFile}> */}
                 <div className="input-img_container">
                     <span className="input-content">
                         <AddPhoto widht="4rem" height="4rem"/>
                     </span>                 
                     <input className ="input-file" type="file" onChange={handleChangeFileInput}></input> 
                 </div>
-                {/* {inputFileVal && (
-                    <div className="img-preview_container">
-                        <span className="remove-img" onClick={handleClickRemoveImg}>
-                            <Close width="2rem" height="2rem" />
-                        </span>
-                        <img className="img-preview" src={inputFileVal} />
-                    </div>
-                )}             */}
-                {/* </form> */}
-                {/* ****************** */}
                 <div className="button-container"> 
                     <Button disabled={isButtonDisabled} background="black">Nettear</Button>
                 </div>

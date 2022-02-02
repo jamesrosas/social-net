@@ -12,7 +12,7 @@ const SearchUser = () => {
     //con esta constante creamos un nuevo array basado en allNetts , el cual nos devolvera en cada indice el nombre del usuario una unica vez sin volverlo a repetir, lo cual nos sirve para mostrar en los resultados el nombre del user que se esta buscando una unica vez;
     const onlyOneResult = [...new Set(allNetts.map( doc =>  doc.userName  ))]
 
-    console.log("onlyOneResult", onlyOneResult)
+    // console.log("onlyOneResult", onlyOneResult)
 
     const filterOnlyOne = useMemo(() => onlyOneResult.filter( dta => {
             return dta.toLowerCase().includes(inputSearch.toLowerCase())
@@ -25,9 +25,9 @@ const SearchUser = () => {
     })
     , [allNetts, inputSearch])
     
-    console.log("filter", filterAllNetts)
+    // console.log("filter", filterAllNetts)
 
-    console.log("esta es la info de allNetts =>", allNetts)
+    // console.log("esta es la info de allNetts =>", allNetts)
 
     const handleChangeInputSearch = (e) => {
         setinputSearch(e.target.value)
@@ -48,14 +48,16 @@ const SearchUser = () => {
                             {filterAllNetts.map( doc => {
                                 if(doc.userName === nameUser){
                                     return (
-                                        <Link href={`/userprofile/${doc.userId}`}>
-                                            <a>
-                                                <div className="link-container">
-                                                    <img src={doc.avatar} width={35} height={35}/>
-                                                    <p>{nameUser}</p>
-                                                </div>
-                                            </a>
-                                        </Link>   
+                                        <div key={doc.id}>
+                                            <Link href={`/userprofile/${doc.userId}`}>
+                                                <a>
+                                                    <div className="link-container">
+                                                        <img src={doc.avatar} width={35} height={35}/>
+                                                        <p>{nameUser}</p>
+                                                    </div>
+                                                </a>
+                                            </Link>   
+                                        </div>
                                     )
                                 }
                             })}      

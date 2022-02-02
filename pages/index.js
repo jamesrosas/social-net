@@ -53,7 +53,7 @@ export default function Home() {
 
   const handleSubmitSignUp = (e) => {
     e.preventDefault()
-    console.log(email, pass)
+    // console.log(email, pass)
     signUpWithEmailAndPassword(email, pass, userName)
       .then(() => {
         singleAlertMessage.fire({

@@ -1,7 +1,6 @@
 import Avatar from "components/Avatar"
 import useTimeAgo from "hooks/useTimeAgo"
 import { useRouter } from "next/router"
-import Link from "next/link"
 import useDateTimeFormat from "hooks/useDateTimeFormat"
 import { deleteComment } from "firebase/client"
 import Delete from "components/Icons/Delete"

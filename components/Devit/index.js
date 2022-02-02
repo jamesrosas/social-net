@@ -5,7 +5,7 @@ import Link from "next/link"
 import useDateTimeFormat from "hooks/useDateTimeFormat"
 import { useState, useEffect } from "react"
 import useUser from "hooks/useUser"
-import { deleteFavs, deleteNett, getAllFavsNetts, getNettComments } from "firebase/client"
+import { deleteFavs, deleteNett, getNettComments } from "firebase/client"
 import Comments from "components/Icons/Comments"
 import FavStar from "components/FavStar"
 import useCurrentUser from "hooks/useCurrentUser"
@@ -18,12 +18,13 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
 
     const timeAgo = useTimeAgo(createdAt)
     const createdAtFormated = useDateTimeFormat(createdAt)
-
-    const [lenghtComments , setLenghtComments] = useState([])
-
     const user = useUser()
     const currentUser = useCurrentUser()
+    const { allfavNetts } = useFavsNetts()
     const { optionsAlertMessage, toast } = useCustomAlerts()
+    const router = useRouter()
+
+    const [lenghtComments , setLenghtComments] = useState([])
 
     // *** aqui mandamos a llamar la subcoleccion "comments" para mostrar su .lenght en un icono de comentarios
     useEffect(() => {
@@ -38,7 +39,6 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
         
     }, [user])
 
-    const router = useRouter()
 
     const handleClick = (e) => {
         e.preventDefault()
@@ -59,9 +59,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
 
     // prueba de eliminacion conjunta del nettOriginal y su favNett correspondiente*******
 
-    const [allfavNetts, setAllfavNetts] = useState([])
-
-    console.log("este es el contenido de allFavNetts: ", allfavNetts)
+    // console.log("este es el contenido de allFavNetts: ", allfavNetts)
 
     const handleClickDeleteNett = () => {
         optionsAlertMessage.fire({
@@ -86,21 +84,8 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
           })
     }
 
-    useEffect(() => {
-        let unsubscribe
-        if (user) {
-            unsubscribe = getAllFavsNetts( favsNetts => {
-                setAllfavNetts(favsNetts)
-            })
-        }
-
-        return () => unsubscribe && unsubscribe()
-        
-    }, [user])
-
     const commentsNumber = lenghtComments.length > 0 ? lenghtComments.length : null
-    
-    
+     
     return (
         <>
         <article>
@@ -116,9 +101,7 @@ const Devit = ({ userName, avatar, content, createdAt, img, id, uid}) => {
                     </Link>
                 </header>
                 <p onClick={handleClick}>{content}</p>
-                {/* aqui ira el componente NettImage */}
                 {img && <NettImage src={img} />}
-                {/* {img && <img src={img} />} */}
                 <div className="comment-fav_container">
                     <span onClick={handleClick} className="comments-icon">
                         <Comments  width="2.5rem" height="2.5rem" />

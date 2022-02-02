@@ -10,9 +10,6 @@ const AddComment = ({idNett}) => {
     const [comment, setComment] = useState("")
     const [commentUser, setCommentUser] = useState({})
 
-    console.log("ver comment user")
-    console.log(commentUser)
-
     const user = useUser()
 
     useEffect(() => {
@@ -36,7 +33,7 @@ const AddComment = ({idNett}) => {
         addComment({
             content: comment
         }, idNett).then(() => setComment(""))
-        console.log("comentario hecho")
+        // console.log("comentario hecho")
     }
 
     return (

@@ -18,7 +18,7 @@ const db = firebase.firestore()
 
 const mapUserFromFirebaseAuth = (user) => {
     const { displayName, email, photoURL, uid} = user
-    console.log(user)
+    // console.log(user)
 
     return {
         avatar: photoURL,
@@ -203,7 +203,7 @@ export const getUserComments = (uid, callback) => {
         .where("userId", "==", uid)
         .onSnapshot(({docs}) => {
             const mapeo = docs.map(doc => {
-                console.log("mapeo con onSnapshot", doc.data())
+                // console.log("mapeo con onSnapshot", doc.data())
                 const data = doc.data()
                 const id = doc.id
 

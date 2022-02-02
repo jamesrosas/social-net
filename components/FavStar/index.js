@@ -11,13 +11,9 @@ const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}
     const [fav, setFav] = useState(false)
     const [nettFavId, setNettFavId] = useState([])
     const [favIcon, setFavIcon] = useState(false)
-    // DE alguna manera podria hacer que , si ya tengo un doc Fav , hacer uso de su booleano true para establecer como state del icono algo talvez como lo siguiente;
-    //   const [favIcon, setFavIcon] = useState(estrellaIcon.lenght ? estrellaIcon.[0].fav : false)
     const [estrellaIcon, setEstrellaIcon] = useState([])
 
-
-    console.log("este es el nett favId")
-    console.log(nettFavId)
+    // console.log("este es el nett favId", nettFavId)
 
     const user = useUser()
     const currentUser = useCurrentUser()
@@ -34,14 +30,12 @@ const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}
                 createdAt,
                 originalNettId: nettId
             })
-            // .then((doc) => setNettFavId(doc.id) )
-            console.log("agregando fav")
+            // console.log("agregando fav")
         } else {
             if(nettFavId.length){
                 deleteFavs(nettFavId[0].id)
                 //en nettFavId podria almacenar el id traido de firebase para asi eliminarlo
-            // este nettFavId es el que puedo utilizar para colocar el estado true del corazon y que permanezca asi para el current User que le dio me gusta
-                console.log("favNett eliminado")
+                // console.log("favNett eliminado")
             }
 
         }
@@ -50,13 +44,12 @@ const FavStar = ({nettId, avatar, content, img, nettUserId, userName, createdAt}
     }, [fav])
 
 
-    console.log("este es el contenido GET de estrella")
-    console.log(estrellaIcon)
+    // console.log("este es el contenido GET de estrella", estrellaIcon)
 
     const handleClickIconStatus = () => {
         setFavIcon(!favIcon)
         setFav(!fav) 
-        //--> si agrego tambien este cambio de estado al hacer click cada operacion seguira teniendo su estado pero se activaran al tiempo, cada uno con su useEffect por su parte , uno para agregar la info y otro para persistir el icono
+        //--> si agrego tambien este cambio de estado al hacer click cada operacion seguira teniendo su estado pero se activaran al tiempo, cada uno con un useEffect por su parte , uno para agregar la info y otro para persistir el icono
     }
 
     useEffect(() => {

@@ -3,13 +3,15 @@ import Loader from 'components/Loader'
 import useUser, { USER_STATES } from 'hooks/useUser'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Button from '../components/Button/index'
 import { loginWithGitHub, loginWithGoogle, signUpWithEmailAndPassword, signInWithEmailAndPassword, signOut , sendEmailToResetPassword} from '../firebase/client'
 import GoogleIcon from 'components/Icons/Google'
 import AnimateLogo from 'components/AnimateLogo'
 import LoginModal from 'components/LoginModal'
 import useCustomAlerts from 'hooks/useCustomAlerts'
+import Show from 'components/Icons/Show'
+import Hide from 'components/Icons/Hide'
 
 export default function Home() {
 
@@ -24,9 +26,6 @@ export default function Home() {
   const [email, setEmail] = useState("")
   const [pass , setPass] = useState("")
   const [userName, setUserName] = useState("")
-
-  const form = useRef(null)
-
 
   useEffect(() => {
     user && router.replace('/home')
@@ -110,6 +109,17 @@ export default function Home() {
     })
   }
 
+  const [ showPass, setShowPass] = useState(false)
+
+  const handleClickShowPass = () => {
+    setShowPass(!showPass)
+  }
+
+  const [ showPassSignUp, setShowPassSignUp] = useState(false)
+
+  const handleClickShowPassSignUp = () => {
+    setShowPassSignUp(!showPassSignUp)
+  }
   
   return (
     <>
@@ -132,7 +142,15 @@ export default function Home() {
               <LoginModal modalClass={modal2 ? 'modal modalOn' : 'modal'} onClick={handleClickSignIn}>
                 <form onSubmit={handleSubmitSignIn}>
                   <input placeholder='Email' value={email} onChange={handleChangeEmail} pattern="^[a-z0-9_]+(\.[a-z0-9_]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required></input>
-                  <input placeholder='Password' value={pass} onChange={handleChangePass} type="password" required></input>
+                  <div id="input-pass_container">
+                    <input  placeholder='Password' value={pass} onChange={handleChangePass} type={showPass ? "text" : "password"} required></input>
+                    <span id="show-pass_icon" onClick={handleClickShowPass}>
+                      {showPass
+                       ?  <Hide width="2.5rem" height="2.5rem"/>
+                       :  <Show width="2.5rem" height="2.5rem"/>
+                      }
+                    </span>
+                  </div>
                   {errorMessage && (
                     <>
                       <p className='error'>Email o contraseña erroneos!</p>
@@ -146,10 +164,18 @@ export default function Home() {
                 </form>
               </LoginModal>
               <LoginModal modalClass={modal ? 'modal modalOn' : 'modal'} onClick={handleClickSignUp}>
-                <form ref={form} onSubmit={handleSubmitSignUp}>
+                <form onSubmit={handleSubmitSignUp}>
                   <input placeholder='Email' value={email} onChange={handleChangeEmail} pattern="^[a-z0-9_]+(\.[a-z0-9_]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,15})$" required></input>
-                  <input placeholder='Username' maxLength="15" value={userName} onChange={handleChangeUser} pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$" required></input>
-                  <input placeholder='Password' value={pass} onChange={handleChangePass} type="password" required></input>
+                  <input placeholder='Username' maxLength="15" value={userName} onChange={handleChangeUser} pattern="^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+[a-z0-9_]+(\.[a-z0-9_]+$" required></input>
+                  <div id="input-pass_container">
+                    <input placeholder='Password' value={pass} onChange={handleChangePass} type={showPassSignUp ? "text" : "password"}  required></input>
+                    <span id="show-pass_icon" onClick={handleClickShowPassSignUp}>
+                      {showPassSignUp
+                       ?  <Hide width="2.5rem" height="2.5rem"/>
+                       :  <Show width="2.5rem" height="2.5rem"/>
+                      }
+                    </span>
+                  </div>
                   <Button>
                     Registrarse
                   </Button>
@@ -209,6 +235,26 @@ export default function Home() {
           font-size: 18px;
           margin: 0 auto 1rem auto;
           border: 1px solid black;
+        }
+        #input-pass_container {
+          width: 100%;
+          height: fit-content;
+          position: relative;
+          /* border: 1px solid red; */
+          display: flex;
+        }
+        #show-pass_icon {
+          position: absolute;
+          top: 0;
+          right: 2rem;
+          cursor: pointer;
+          /* border: 1px solid red; */
+          height: 45px;
+          display: flex;
+          justify-content: center;
+          width: 40px;
+          align-items: center;
+
         }
 
         .error {

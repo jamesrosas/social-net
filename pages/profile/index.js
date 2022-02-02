@@ -2,7 +2,6 @@ import BackNav from "components/BackNav"
 import { updateUserProfile, uploadImage } from "firebase/client"
 import useUser from "hooks/useUser"
 import { useState, useEffect, useRef } from "react"
-import Swal from "sweetalert2"
 import Devit from "components/Devit"
 import Loader from "components/Loader"
 import { getAllUserPosts } from "firebase/client"
@@ -15,11 +14,13 @@ import Close from "components/Icons/Close"
 import useFavsNetts from "hooks/useFavsNetts"
 import Link from "next/link"
 import NettImage from "components/NettImage"
+import useCustomAlerts from "hooks/useCustomAlerts"
 
 
 const Profile = () => {
 
     const user = useUser()
+    const { toast } = useCustomAlerts()
     const { favsUserTimeline } = useFavsNetts()
 
     const [userTimeline , setUserTimeline] = useState([])
@@ -84,10 +85,13 @@ const Profile = () => {
     const handleSubmitUserName = (e) => {
         e.preventDefault()
         updateUserProfile({name: newName}, () => {
-            Swal.fire("userName Actualizado")
+            toast.fire({
+                text:"Username Actualizado",
+                icon: "success"
+            })
             setEditName(false)
         })
-        console.log("nombre actualizado")
+        // console.log("nombre actualizado")
     }
 
     // usar este mismo metodo en el boton "foto +" de createNett
@@ -119,14 +123,17 @@ const Profile = () => {
     // APARENTEMENTE YA ESTA FUNCIONANDO LA ACTUALIZACION DEL AVATAR, LA VECEZ QUE NO SE ACTULIZABA LA IMAGEN SE PUEDE DEBER A QUE FIREBASE SE ESTA DEMORANDO EN EJECUTAR DICHO PROCESO;
     const handleClickUpdateImg = () => {
         updateUserProfile({avatarUrl: imageUrlStorage}, () => {
-            Swal.fire("Avatar actualizado")
+            toast.fire({
+                text:"Avatar actualizado",
+                icon: "success"
+            })
             setImageUrlStorage(null)
             setInputFileValue(null)
             setImageInput(null)
             setModalProfile(false)
         })
-        console.log("ejecutando actualizacion de avatar")
-        console.log(user)
+        // console.log("ejecutando actualizacion de avatar")
+        // console.log(user)
     }
 
     useEffect(() => {

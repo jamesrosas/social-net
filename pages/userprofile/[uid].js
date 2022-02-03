@@ -202,7 +202,7 @@ export async function getServerSideProps (context) {
     const { params, res } = context
     const { uid } = params
 
-    const apiResponse = await fetch(`http://localhost:3000/api/userprofiledata/${uid}`)
+    const apiResponse = await fetch(`https://social-net-phi.vercel.app/api/userprofiledata/${uid}`)
     if (apiResponse.ok) {
         const props = await apiResponse.json()
         return { props } 

@@ -17,11 +17,6 @@ const NettPage = (props) => {
 
     const user = useUser()
 
-    const router = useRouter()
-    if(router.isFallback) return "loading...."  
-    // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
-    // console.log(props)
-
     // despues de crear un comentario , atraves de un useEffect se ejecutara la funcion para traer los docs de la subcoleccion "comments" lo cual guardaremos en un useState para despues mapearlo en el jsx
     useEffect(() => {
         let unsubscribe
@@ -34,6 +29,13 @@ const NettPage = (props) => {
         return () => unsubscribe && unsubscribe()
         
     }, [user])
+
+    const router = useRouter()
+    if(router.isFallback) return "loading...."  
+    // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
+    // console.log(props)
+
+    
 
     // console.log("este es el id del nett, el mismo de la url")
     // console.log(props.id)

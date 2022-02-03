@@ -13,12 +13,12 @@ const NettImage = ({src}) => {
     return (
         <>  
             <picture onClick={handleClickImageComplete}>
-                <img src={src}/>
+                <img src={src} alt="post-image"/>
             </picture>
             {completeImage && (
                 <div className='nett-image_modal'>
                         <Loader/>
-                        <img id="img-modal" src={src}/>
+                        <img id="img-modal" src={src} alt='image'/>
                         <span onClick={handleClickImageComplete}>
                             <Close width="3rem" height="3rem"/>
                         </span>

@@ -75,7 +75,7 @@ const Profile = () => {
 
     const handleClickEditName = () => {
         setEditName(!editName)
-        setNewName(null)
+        setNewName("")
         setModalProfile(false)
     }
     const handleChangeUserName = (e) => {
@@ -257,7 +257,7 @@ const Profile = () => {
                             </div>
                             {inputFileValue && (
                                 <div className="avatar-preview_container">
-                                    <img className="img-preview" src={inputFileValue} />
+                                    <img className="img-preview" src={inputFileValue} alt="preview-image" />
                                     {imageInput && (
                                         <div className="upload-buttons_container">
                                             <Button type="submit">subir imagen</Button>
@@ -284,7 +284,7 @@ const Profile = () => {
                         {imageUrlStorage && (
                             <div className="avatar-loader_container">
                                 <div className="image-container">
-                                    <img className="image-uploaded" src={imageUrlStorage}></img>
+                                    <img className="image-uploaded" src={imageUrlStorage} alt="uploaded-image"></img>
                                 </div>
                                 <div className="upload-buttons_container">
                                     <Button onClick={handleClickUpdateImg}>Actualizar</Button>

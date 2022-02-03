@@ -72,7 +72,7 @@ const Timeline = () => {
                     <Link href="/profile">
                         <a tile="Profile">
                             {user && (
-                                <img className="icon-profile" src={user.avatar} width={35} height={35}></img>
+                                <img className="icon-profile" src={user.avatar} alt={user.userName} width={35} height={35}></img>
                             )}
                         </a>
                     </Link>

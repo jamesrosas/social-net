@@ -1,6 +1,6 @@
 import { firestore } from "firebase/admin"
 
-export default (request, response) => {
+const userProfileDataApi = (request, response) => {
     const { query } = request
     const { uid } = query
 
@@ -44,3 +44,5 @@ export default (request, response) => {
             
     
 }
+
+export default userProfileDataApi

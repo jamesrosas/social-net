@@ -8,10 +8,11 @@ import useGetComments from "hooks/useGetComments"
 const UserProfilePage = (props) => {
 
     const router = useRouter()
+    const commentsData = useGetComments(props.uid)
+
     if(router.isFallback) return "loading...."  
     // *isFallbarck lo sacamos de router es y gracias al cual junto con el true en el fallback de getStaticPaths, podemos hacer que cada ruta dinamica cree el estatico de dicho documento cuando este se solicite, de manera que asi se creearan de manera automatica todas nuestras rutas dinamicas.
    
-    const commentsData = useGetComments(props.uid)
 
     return (
         <>
@@ -51,7 +52,7 @@ const UserProfilePage = (props) => {
                             </div>
                             <div className="no-netts_container" >
                                 <p>{commentsData[0].userName} no ha publicado nada aún :/</p>
-                                <img src="https://i.postimg.cc/s2N6Czyg/nonetts.gif" width={200} />
+                                <img src="https://i.postimg.cc/s2N6Czyg/nonetts.gif" alt="whitout posts" width={200} />
                             </div>
                         </>
                     )}   

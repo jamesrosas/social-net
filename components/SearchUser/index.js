@@ -9,15 +9,17 @@ const SearchUser = () => {
 
     const { allNetts } = useGetNetts()
 
-    //con esta constante creamos un nuevo array basado en allNetts , el cual nos devolvera en cada indice el nombre del usuario una unica vez sin volverlo a repetir, lo cual nos sirve para mostrar en los resultados el nombre del user que se esta buscando una unica vez;
-    const onlyOneResult = [...new Set(allNetts.map( doc =>  doc.userName  ))]
-
     // console.log("onlyOneResult", onlyOneResult)
 
-    const filterOnlyOne = useMemo(() => onlyOneResult.filter( dta => {
+    const filterOnlyOne = useMemo(() => {
+        //con esta constante creamos un nuevo array basado en allNetts , el cual nos devolvera en cada indice el nombre del usuario una unica vez sin volverlo a repetir, lo cual nos sirve para mostrar en los resultados el nombre del user que se esta buscando una unica vez;
+        const onlyOneResult = [...new Set(allNetts.map( doc =>  doc.userName  ))]
+
+        onlyOneResult.filter( dta => {
             return dta.toLowerCase().includes(inputSearch.toLowerCase())
         })
-    , [onlyOneResult, inputSearch])
+    } 
+    , [allNetts, inputSearch])
     
     
     const filterAllNetts = useMemo(() => allNetts.filter( dta => {
@@ -52,7 +54,7 @@ const SearchUser = () => {
                                             <Link href={`/userprofile/${doc.userId}`}>
                                                 <a>
                                                     <div className="link-container">
-                                                        <img src={doc.avatar} width={35} height={35}/>
+                                                        <img src={doc.avatar} width={35} height={35} alt={nameUser}/>
                                                         <p>{nameUser}</p>
                                                     </div>
                                                 </a>

@@ -114,7 +114,7 @@ const ComposeTweet = () => {
         <section>
             {user && (
                 <div className="avatar-container">
-                    <Avatar src={user.avatar}/>
+                    <Avatar src={user.avatar} alt={user.userName}/>
                 </div>
             )}
             <form onSubmit={handleSubmit}>
@@ -133,7 +133,7 @@ const ComposeTweet = () => {
                 {imageURL && (
                     <div className="img-container">
                         <button onClick={() => setImageURL(null)}>x</button>
-                        <img src={imageURL} />  
+                        <img src={imageURL} alt="preview-image"/>  
                     </div>
                 )}
                 <div className="input-img_container">

@@ -56,7 +56,7 @@ const Comment = ({ userName, avatar, content, createdAt, img, uid, id, originalN
                         <time title={createdAtFormated}>{timeAgo}</time>
                     </header>
                     <p>{content}</p>
-                    {img && <img src={img}/>}
+                    {img && <img src={img} alt="image"/>}
                 </div>
                 {uid === currentUser.userId && (
                     <span className="delete-icon" onClick={handleClickDeleteComment}>

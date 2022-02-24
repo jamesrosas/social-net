@@ -4,7 +4,7 @@ Demo https://social-net-phi.vercel.app/
 
 Hola bienvenid@, social-net es una modesta red social construida con tecnologias como **React.js** haciendo uso de **Next.js** que es su framework oficial del lado del servidor, el cual no permite crear nuestros propios endpoints API y hacer server side rendering (SSR) y por ende mejorar en gran medida el performance de nuestra apps, lo cual es muy bueno en cuanto a SEO.
 
-También hago uso de **Firebase** como backend as a service para la base de datos.
+También hago uso de **Firebase** como backend as a service para la base de datos, y autenticación de usuarios.
 
 Construida bajo el paradigma de Mobile Only.
 

@@ -1,34 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Social-Net 📲
+Demo https://social-net-phi.vercel.app/
 
-## Getting Started
 
-First, run the development server:
+Hola bienvenid@, social-net es una modesta red social construida con tecnologias como **React.js** haciendo uso de **Next.js** que es su framework oficial del lado del servidor, el cual no permite crear nuestros propios endpoints API y hacer server side rendering (SSR) y por ende mejorar en gran medida el performance de nuestra apps, lo cual es muy bueno en cuanto a SEO.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+También hago uso de **Firebase** como backend as a service para la base de datos.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Construida bajo el paradigma de Mobile Only.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+> Registro y login de usuarios
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+![screenshot](https://i.postimg.cc/jqhKPspZ/login-page.png) 
+![screenshot](https://i.postimg.cc/4NNG1DZZ/login-modal.png)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+En social-net puedes crearte una cuenta para ingresar, donde lo primero que veras será el timeline de la home, en la cual podrás observar todas las publicaciones que los usuarios de social-net han creado, donde también podras interactuar con dichas publicaciones haciendoles comentarios o guardandolas en tus favoritos.
 
-To learn more about Next.js, take a look at the following resources:
+> Imagen de la home timeline
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+![screenshot](https://i.postimg.cc/zf60Hrf7/home-timeline.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Cada post creado se compone por el avatar del usuario que lo creó junto con su nombre, un timestamp que indica hace cuanto tiempo se ha creado la publicación, el contendio del post porsupuesto (el cual puede llevar solo texto, o tambien ir acompañado de una imagen) , también encontraras algunos iconos, como el icono de "cesta de basura" con el cual si eres el creador podras eliminar dicho post, tambien un icono de "comentario" que indica el numero de comentarios que posee el post, y por último el icono de "estrella" cuya funcion es guardar dicho post en tus favoritos al dar clic sobre ella, donde si le vuelves a dar clic elimará dicho post de tus favoritos.
 
-## Deploy on Vercel
+> Estrucutra del post
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+![screenshot](https://i.postimg.cc/Y242KcZ3/nett-details-page.png)
+![screenshot](https://i.postimg.cc/SsQN9wtX/nett-structure.png)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+Cada usuario de la app posee su propio perfil, donde si por ejemplo en cualquier post das click sobre la imagen de avatar o su nombre, te llevará al perfil del usuario correspondiente, donde podrás visualizar todos los post que dicho usuario ha creado.
+
+Tu también contaras con una sección para tu perfil, donde además de visualizar todos lo post que has creado también tendrás un sección de "Favs" donde podrás visualizar todos los post que has guardado como favoritos. Además de lo anterior tambien es aqui donde podrás actualizar tu foto de avatar y tu username.
+
+> Profile
+
+![screenshot](https://i.postimg.cc/ZKmZykBJ/profile-page.png)
+
+Exite también una sección muy importante, que es la sección para crear un post, a la cual puedes acceder desde el icono de "crear nota" que esta hubicada en la home timeline. Entonces es en esta sección donde crearás tus post , ya sean solo texto, o con imagen, la cual podras adjuntar a tráves del icono de "imagen".
+
+> Crear un Post
+
+![screenshot](https://i.postimg.cc/pXYvQP3s/create-nett.png)
+
+
+En la home también encontrarás un icono de "lupa" la cual te llevará a una sección donde logicamente podrás buscar a cualquier usuario de la app, a tráves de su username. Dichos usuarios solamente aparecerán en el buscador solamente si han hecho almenos un post.
+
+> Buscador de usuarios
+
+![screenshot](https://i.postimg.cc/jqpmkByB/search-user.png)
+
+
+Te invito a conocer el proyecto en https://social-net-phi.vercel.app/
